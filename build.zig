@@ -54,4 +54,17 @@ pub fn build(b: *std.Build) void {
 
     const flash_step = b.step("flash", "Flash the application to a connected board");
     flash_step.dependOn(&flash_cmd.step);
+
+    // Target for monitoring the board's serial port.
+    const serial_port = b.option([]const u8, "serial_port", "Connected board's serial port (defaults to '/dev/ttyUSB0').") orelse "/dev/ttyUSB0";
+    const baud_rate = b.option(u32, "baud_rate", "Connected board's baud rate (defaults to 115200).") orelse 115200;
+
+    const monitor_cmd = b.addSystemCommand(&[_][]const u8{"screen"});
+    monitor_cmd.addArgs(&[_][]const u8{
+        serial_port,
+        b.fmt("{d}", .{baud_rate}),
+    });
+
+    const monitor_step = b.step("monitor", "Monitor the connected board's serial port. Note: requires FTDI adapter (for now...)");
+    monitor_step.dependOn(&monitor_cmd.step);
 }
