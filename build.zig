@@ -40,13 +40,8 @@ pub fn build(b: *std.Build) void {
     const copy_bin = b.addInstallBinFile(bin.getOutput(), "project.bin");
     b.default_step.dependOn(&copy_bin.step);
 
-    // const flash_cli = fmt.allocPrint(allocator, "openocd ", ) catch "";
+    // Target for flashing the binary to the board
     const flash_cmd = b.addSystemCommand(&[_][]const u8{"openocd"});
-    // std.debug.print(
-    //     "-f /usr/share/openocd/scripts/interface/stlink.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg -c \'program {s} 0x08000000 reset exit\'",
-    //     .{b.getInstallPath(copy_bin.dir, copy_bin.dest_rel_path)},
-    // );
-
     flash_cmd.addArgs(&[_][]const u8{
         "-f",
         "/usr/share/openocd/scripts/interface/stlink.cfg",
