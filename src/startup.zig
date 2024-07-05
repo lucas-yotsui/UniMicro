@@ -26,3 +26,33 @@ export fn reset_handler() void {
     // main should never exit
     unreachable;
 }
+
+// Pointer to the top of the stack. It isn't really a function
+// but if not declared like this compiler keeps complaining so
+// this is a temporary solution
+extern fn _stack() void;
+
+// Default handler, does absolutely nothing but to wait for
+// inspection with a debugger
+export fn default_handler() noreturn {
+    while (true) {}
+}
+
+export const vector_table linksection(".vector") = [_]?*const fn () callconv(.C) void{
+    _stack, // Pointer to the top of the Stack
+    reset_handler, // Reset handler
+    default_handler, // NMI handler
+    default_handler, // Hard fault handler
+    default_handler, // Memory management fault handler
+    default_handler, // Bus fault handler
+    default_handler, // Usage fault handler
+    null, // Reserved
+    null, // Reserved
+    null, // Reserved
+    null, // Reserved
+    default_handler, // SVcall handler
+    default_handler, // Debug monitor handler
+    null, // Reserved
+    default_handler, // PendSV handler
+    default_handler, // Systick handler
+};

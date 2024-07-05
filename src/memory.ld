@@ -3,13 +3,19 @@ MEMORY {
   SRAM(rwx) : ORIGIN = 0x20000000, LENGTH = 128K
 }
 
+_stack = ORIGIN(SRAM) + LENGTH(SRAM);
+
 SECTIONS {
   .text : {
     _text = .;
-    KEEP(*(.vectors*))
+    KEEP(*(.vector*))
     *(.text*)
     *(.rodata)
     _etext = .;
+  } >FLASH
+
+  .ARM.exidx : {
+    *(.ARM.exidx*)
   } >FLASH
 
   .data : {

@@ -67,4 +67,19 @@ pub fn build(b: *std.Build) void {
 
     const monitor_step = b.step("monitor", "Monitor the connected board's serial port. Note: requires FTDI adapter (for now...)");
     monitor_step.dependOn(&monitor_cmd.step);
+
+    // Target for attaching a debugger to the board
+    const debug_cmd = b.addSystemCommand(&[_][]const u8{"openocd"});
+    debug_cmd.addArgs(&[_][]const u8{
+        "-f",
+        "/usr/share/openocd/scripts/interface/stlink.cfg",
+        "-f",
+        "/usr/share/openocd/scripts/target/stm32f4x.cfg",
+        "-c",
+        b.fmt("program {s} 0x08000000 verify reset", .{b.getInstallPath(copy_bin.dir, copy_bin.dest_rel_path)}),
+    });
+    debug_cmd.step.dependOn(&copy_bin.step);
+
+    const debug_step = b.step("debug", "Flash the application to a connected board and attach a debugger to it");
+    debug_step.dependOn(&debug_cmd.step);
 }
