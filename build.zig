@@ -16,12 +16,12 @@ pub fn build(b: *std.Build) void {
     const elf = b.addExecutable(.{
         .name = "project.elf",
         .target = target,
-        .root_source_file = .{ .path = "src/startup.zig" },
+        .root_source_file = b.path("src/startup.zig"),
         .optimize = optimization_level,
         .single_threaded = true,
     });
     elf.entry = .{ .symbol_name = "reset_handler" };
-    elf.setLinkerScript(.{ .path = "src/memory.ld" });
+    elf.setLinkerScript(b.path("src/memory.ld"));
 
     // Copy elf to output dir
     const copy_elf = b.addInstallArtifact(elf, .{});
