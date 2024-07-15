@@ -6,7 +6,7 @@ extern var _edata: u8;
 extern var _bss: u8;
 extern var _ebss: u8;
 
-export fn reset_handler() void {
+fn startup_logic() callconv(.C) void {
     // Copy data segment from flash to sram
     const data: [*]u8 = @ptrCast(&_data);
     const data_loadaddr: [*]u8 = @ptrCast(&_data_loadaddr);
@@ -27,32 +27,11 @@ export fn reset_handler() void {
     unreachable;
 }
 
-// Pointer to the top of the stack. It isn't really a function
-// but if not declared like this compiler keeps complaining so
-// this is a temporary solution
-extern fn _stack() void;
+comptime {
+    @import("hal/interrupts.zig").register_interrupt(startup_logic, .RESET);
 
-// Default handler, does absolutely nothing but to wait for
-// inspection with a debugger
-export fn default_handler() noreturn {
-    while (true) {}
+    // @export(startup_logic, .{
+    //     .name = "reset_handler",
+    //     .linkage = .strong,
+    // });
 }
-
-export const vector_table linksection(".vector") = [_]?*const fn () callconv(.C) void{
-    _stack, // Pointer to the top of the Stack
-    reset_handler, // Reset handler
-    default_handler, // NMI handler
-    default_handler, // Hard fault handler
-    default_handler, // Memory management fault handler
-    default_handler, // Bus fault handler
-    default_handler, // Usage fault handler
-    null, // Reserved
-    null, // Reserved
-    null, // Reserved
-    null, // Reserved
-    default_handler, // SVcall handler
-    default_handler, // Debug monitor handler
-    null, // Reserved
-    default_handler, // PendSV handler
-    default_handler, // Systick handler
-};
