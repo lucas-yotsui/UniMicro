@@ -1,17 +1,15 @@
-pub const RCC_APB2ENR: *volatile u32 = @ptrFromInt(0x40023800 + 0x30);
-pub const GPIOC_MODER: *volatile u32 = @ptrFromInt(0x40020800);
-pub const GPIOC_ODR: *volatile u32 = @ptrFromInt(0x40020800 + 0x14);
+const portC = @import("hal/gpio.zig").portC;
+const rcc = @import("hal/rcc.zig").rcc;
 
 pub fn main() noreturn {
-    RCC_APB2ENR.* |= @as(u32, 0b1 << 2); // Enable GPIOC clk
-    GPIOC_MODER.* |= @as(u32, 0b1 << 26); // Set GPIOC13 as Output
+    rcc.ahb1en.gpio_c = true;
+    portC.enable_pin(13, .OUTPUT);
 
     while (true) {
-        var i: u32 = 0;
-        GPIOC_ODR.* ^= @as(u32, 0b1 << 13); // Toggle the bit corresponding to GPIOC13
+        portC.set_pin(13);
+        for (1..100_000) |_| {}
 
-        while (i < 100_000) { // Wait a bit
-            i += 1;
-        }
+        portC.clear_pin(13);
+        for (1..100_000) |_| {}
     }
 }
