@@ -6,10 +6,10 @@ pub fn main() noreturn {
     portC.enable_pin(13, .OUTPUT);
 
     while (true) {
-        portC.set_pin(13);
+        portC.set_pin(13, true);
         for (1..100_000) |_| {}
 
-        portC.clear_pin(13);
+        portC.set_pin(13, false);
         for (1..100_000) |_| {}
     }
 }

@@ -251,69 +251,24 @@ const Gpio = packed struct {
     alt_function_pins_8_to_15: AFRH,
 
     pub fn enable_pin(self: *volatile Gpio, pin: comptime_int, pin_mode: MODE.Mode) void {
-        switch (pin) {
-            0 => self.mode.pin0 = pin_mode,
-            1 => self.mode.pin1 = pin_mode,
-            2 => self.mode.pin2 = pin_mode,
-            3 => self.mode.pin3 = pin_mode,
-            4 => self.mode.pin4 = pin_mode,
-            5 => self.mode.pin5 = pin_mode,
-            6 => self.mode.pin6 = pin_mode,
-            7 => self.mode.pin7 = pin_mode,
-            8 => self.mode.pin8 = pin_mode,
-            9 => self.mode.pin9 = pin_mode,
-            10 => self.mode.pin10 = pin_mode,
-            11 => self.mode.pin11 = pin_mode,
-            12 => self.mode.pin12 = pin_mode,
-            13 => self.mode.pin13 = pin_mode,
-            14 => self.mode.pin14 = pin_mode,
-            15 => self.mode.pin15 = pin_mode,
-            else => unreachable,
-        }
+        const field_name = comptime blk: {
+            var buffer: [4 + (pin / 10)]u8 = undefined;
+            break :blk try @import("std").fmt.bufPrint(&buffer, "pin{d}", .{pin});
+        };
+
+        @field(self.mode, field_name) = pin_mode;
     }
 
-    pub fn set_pin(self: *volatile Gpio, pin: comptime_int) void {
-        switch (pin) {
-            0 => self.output_data.pin0 = true,
-            1 => self.output_data.pin1 = true,
-            2 => self.output_data.pin2 = true,
-            3 => self.output_data.pin3 = true,
-            4 => self.output_data.pin4 = true,
-            5 => self.output_data.pin5 = true,
-            6 => self.output_data.pin6 = true,
-            7 => self.output_data.pin7 = true,
-            8 => self.output_data.pin8 = true,
-            9 => self.output_data.pin9 = true,
-            10 => self.output_data.pin10 = true,
-            11 => self.output_data.pin11 = true,
-            12 => self.output_data.pin12 = true,
-            13 => self.output_data.pin13 = true,
-            14 => self.output_data.pin14 = true,
-            15 => self.output_data.pin15 = true,
-            else => unreachable,
-        }
-    }
+    pub fn set_pin(self: *volatile Gpio, pin: comptime_int, state: bool) void {
+        const field_name = comptime blk: {
+            var buffer: [4 + (pin / 10)]u8 = undefined;
+            break :blk try @import("std").fmt.bufPrint(&buffer, "pin{d}", .{pin});
+        };
 
-    pub fn clear_pin(self: *volatile Gpio, pin: comptime_int) void {
-        switch (pin) {
-            0 => self.output_data.pin0 = false,
-            1 => self.output_data.pin1 = false,
-            2 => self.output_data.pin2 = false,
-            3 => self.output_data.pin3 = false,
-            4 => self.output_data.pin4 = false,
-            5 => self.output_data.pin5 = false,
-            6 => self.output_data.pin6 = false,
-            7 => self.output_data.pin7 = false,
-            8 => self.output_data.pin8 = false,
-            9 => self.output_data.pin9 = false,
-            10 => self.output_data.pin10 = false,
-            11 => self.output_data.pin11 = false,
-            12 => self.output_data.pin12 = false,
-            13 => self.output_data.pin13 = false,
-            14 => self.output_data.pin14 = false,
-            15 => self.output_data.pin15 = false,
-            else => unreachable,
-        }
+        // This function only works if the pin is set as Output
+        if (@field(self.mode, field_name) != .OUTPUT) return;
+
+        @field(self.output_data, field_name) = state;
     }
 };
 
