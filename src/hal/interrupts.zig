@@ -77,8 +77,7 @@ export fn default_handler() noreturn {
     while (true) {}
 }
 
-const InterruptHandler = *const fn () callconv(.C) void;
-export const vector_table linksection(".vector") = [_]?InterruptHandler{
+export const vector_table linksection(".vector") = [_]?*const fn () callconv(.C) void{
     _stack_top, // Pointer to the top of the Stack
     reset_handler, // Reset handler
     nmi_handler, // NMI handler
@@ -224,8 +223,8 @@ const InterruptSource = enum {
     SPI5_GLOBAL,
 };
 
-pub fn register_interrupt(comptime callback: InterruptHandler, comptime source: InterruptSource) void {
-    const symbol_name = switch (source) {
+pub fn interrupt_handler_name(comptime source: InterruptSource) []const u8 {
+    return switch (source) {
         .RESET => "reset_handler",
         .NMI => "nmi_handler",
         .HARD_FAULT => "hard_fault_handler",
@@ -294,9 +293,4 @@ pub fn register_interrupt(comptime callback: InterruptHandler, comptime source: 
         .SPI4_GLOBAL => "spi4_global_handler",
         .SPI5_GLOBAL => "spi5_global_handler",
     };
-
-    @export(callback, .{
-        .name = symbol_name,
-        .linkage = .strong,
-    });
 }
