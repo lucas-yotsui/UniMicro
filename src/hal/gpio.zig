@@ -142,12 +142,113 @@ const Gpio = packed struct {
         _reserved: u16 = 0,
     };
 
+    const BSR = packed struct(u32) {
+        set_pin0: bool,
+        set_pin1: bool,
+        set_pin2: bool,
+        set_pin3: bool,
+        set_pin4: bool,
+        set_pin5: bool,
+        set_pin6: bool,
+        set_pin7: bool,
+        set_pin8: bool,
+        set_pin9: bool,
+        set_pin10: bool,
+        set_pin11: bool,
+        set_pin12: bool,
+        set_pin13: bool,
+        set_pin14: bool,
+        set_pin15: bool,
+        reset_pin0: bool,
+        reset_pin1: bool,
+        reset_pin2: bool,
+        reset_pin3: bool,
+        reset_pin4: bool,
+        reset_pin5: bool,
+        reset_pin6: bool,
+        reset_pin7: bool,
+        reset_pin8: bool,
+        reset_pin9: bool,
+        reset_pin10: bool,
+        reset_pin11: bool,
+        reset_pin12: bool,
+        reset_pin13: bool,
+        reset_pin14: bool,
+        reset_pin15: bool,
+    };
+
+    const LCK = packed struct(u32) {
+        pin0: bool,
+        pin1: bool,
+        pin2: bool,
+        pin3: bool,
+        pin4: bool,
+        pin5: bool,
+        pin6: bool,
+        pin7: bool,
+        pin8: bool,
+        pin9: bool,
+        pin10: bool,
+        pin11: bool,
+        pin12: bool,
+        pin13: bool,
+        pin14: bool,
+        pin15: bool,
+        lock_bit: bool,
+        _reserved: u15,
+    };
+
+    const AlternateFunction = enum(u4) {
+        ALT_FUNCTION_0 = 0b0000,
+        ALT_FUNCTION_1 = 0b0001,
+        ALT_FUNCTION_2 = 0b0010,
+        ALT_FUNCTION_3 = 0b0011,
+        ALT_FUNCTION_4 = 0b0100,
+        ALT_FUNCTION_5 = 0b0101,
+        ALT_FUNCTION_6 = 0b0110,
+        ALT_FUNCTION_7 = 0b0111,
+        ALT_FUNCTION_8 = 0b1000,
+        ALT_FUNCTION_9 = 0b1001,
+        ALT_FUNCTION_10 = 0b1010,
+        ALT_FUNCTION_11 = 0b1011,
+        ALT_FUNCTION_12 = 0b1100,
+        ALT_FUNCTION_13 = 0b1101,
+        ALT_FUNCTION_14 = 0b1110,
+        ALT_FUNCTION_15 = 0b1111,
+    };
+
+    const AFRL = packed struct(u32) {
+        pin0: AlternateFunction,
+        pin1: AlternateFunction,
+        pin2: AlternateFunction,
+        pin3: AlternateFunction,
+        pin4: AlternateFunction,
+        pin5: AlternateFunction,
+        pin6: AlternateFunction,
+        pin7: AlternateFunction,
+    };
+
+    const AFRH = packed struct(u32) {
+        pin8: AlternateFunction,
+        pin9: AlternateFunction,
+        pin10: AlternateFunction,
+        pin11: AlternateFunction,
+        pin12: AlternateFunction,
+        pin13: AlternateFunction,
+        pin14: AlternateFunction,
+        pin15: AlternateFunction,
+    };
+
     mode: MODE,
     output_type: OTYPE,
     output_speed: OSPEED,
     pull_up_or_pull_down: PUPD,
     input_data: IDATA,
     output_data: ODATA,
+    output_set_and_reset: BSR,
+    lock_pins_config: LCK,
+    alt_function_pins_0_to_7: AFRL,
+    alt_function_pins_8_to_15: AFRH,
 
     pub fn enable_pin(self: *volatile Gpio, pin: comptime_int, pin_mode: MODE.Mode) void {
         switch (pin) {
@@ -232,4 +333,8 @@ test "field_offsets" {
     try expect(@offsetOf(Gpio, "pull_up_or_pull_down") == 0x0C);
     try expect(@offsetOf(Gpio, "input_data") == 0x10);
     try expect(@offsetOf(Gpio, "output_data") == 0x14);
+    try expect(@offsetOf(Gpio, "output_set_and_reset") == 0x18);
+    try expect(@offsetOf(Gpio, "lock_pins_config") == 0x1C);
+    try expect(@offsetOf(Gpio, "alt_function_pins_0_to_7") == 0x20);
+    try expect(@offsetOf(Gpio, "alt_function_pins_8_to_15") == 0x24);
 }
