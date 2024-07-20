@@ -141,8 +141,7 @@ pub inline fn register_interrupt_handler(comptime callback: anytype, source: Int
 
     // If the calling convention is wrong, create a small wrapper around the function
     const handler = switch (@typeInfo(@TypeOf(callback)).Fn.calling_convention) {
-        .C => callback,
-        .Naked => callback,
+        .C, .Naked => callback,
         .Unspecified => struct {
             fn wrapper() callconv(.C) void {
                 @call(.always_inline, callback, .{});
@@ -152,6 +151,184 @@ pub inline fn register_interrupt_handler(comptime callback: anytype, source: Int
     };
 
     @export(handler, .{ .name = symbol_name, .linkage = .strong });
+}
+
+const EXTI = packed struct {
+    const IMR = packed struct(u32) {
+        line_0: bool,
+        line_1: bool,
+        line_2: bool,
+        line_3: bool,
+        line_4: bool,
+        line_5: bool,
+        line_6: bool,
+        line_7: bool,
+        line_8: bool,
+        line_9: bool,
+        line_10: bool,
+        line_11: bool,
+        line_12: bool,
+        line_13: bool,
+        line_14: bool,
+        line_15: bool,
+        line_16: bool,
+        line_17: bool,
+        line_18: bool,
+        _reserved1: u2,
+        line_21: bool,
+        line_22: bool,
+        _reserved2: u9,
+    };
+
+    const EMR = packed struct(u32) {
+        line_0: bool,
+        line_1: bool,
+        line_2: bool,
+        line_3: bool,
+        line_4: bool,
+        line_5: bool,
+        line_6: bool,
+        line_7: bool,
+        line_8: bool,
+        line_9: bool,
+        line_10: bool,
+        line_11: bool,
+        line_12: bool,
+        line_13: bool,
+        line_14: bool,
+        line_15: bool,
+        line_16: bool,
+        line_17: bool,
+        line_18: bool,
+        _reserved1: u2,
+        line_21: bool,
+        line_22: bool,
+        _reserved2: u9,
+    };
+
+    const RTSR = packed struct(u32) {
+        line_0: bool,
+        line_1: bool,
+        line_2: bool,
+        line_3: bool,
+        line_4: bool,
+        line_5: bool,
+        line_6: bool,
+        line_7: bool,
+        line_8: bool,
+        line_9: bool,
+        line_10: bool,
+        line_11: bool,
+        line_12: bool,
+        line_13: bool,
+        line_14: bool,
+        line_15: bool,
+        line_16: bool,
+        line_17: bool,
+        line_18: bool,
+        _reserved1: u2,
+        line_21: bool,
+        line_22: bool,
+        _reserved2: u9,
+    };
+
+    const FTSR = packed struct(u32) {
+        line_0: bool,
+        line_1: bool,
+        line_2: bool,
+        line_3: bool,
+        line_4: bool,
+        line_5: bool,
+        line_6: bool,
+        line_7: bool,
+        line_8: bool,
+        line_9: bool,
+        line_10: bool,
+        line_11: bool,
+        line_12: bool,
+        line_13: bool,
+        line_14: bool,
+        line_15: bool,
+        line_16: bool,
+        line_17: bool,
+        line_18: bool,
+        _reserved1: u2,
+        line_21: bool,
+        line_22: bool,
+        _reserved2: u9,
+    };
+
+    const SWIER = packed struct(u32) {
+        line_0: bool,
+        line_1: bool,
+        line_2: bool,
+        line_3: bool,
+        line_4: bool,
+        line_5: bool,
+        line_6: bool,
+        line_7: bool,
+        line_8: bool,
+        line_9: bool,
+        line_10: bool,
+        line_11: bool,
+        line_12: bool,
+        line_13: bool,
+        line_14: bool,
+        line_15: bool,
+        line_16: bool,
+        line_17: bool,
+        line_18: bool,
+        _reserved1: u2,
+        line_21: bool,
+        line_22: bool,
+        _reserved2: u9,
+    };
+
+    const PR = packed struct(u32) {
+        line_0: bool,
+        line_1: bool,
+        line_2: bool,
+        line_3: bool,
+        line_4: bool,
+        line_5: bool,
+        line_6: bool,
+        line_7: bool,
+        line_8: bool,
+        line_9: bool,
+        line_10: bool,
+        line_11: bool,
+        line_12: bool,
+        line_13: bool,
+        line_14: bool,
+        line_15: bool,
+        line_16: bool,
+        line_17: bool,
+        line_18: bool,
+        _reserved1: u2,
+        line_21: bool,
+        line_22: bool,
+        _reserved2: u9,
+    };
+
+    imr: IMR,
+    emr: EMR,
+    rtsr: RTSR,
+    ftsr: FTSR,
+    swier: SWIER,
+    pr: PR,
+};
+
+pub const exti: *volatile EXTI = @ptrFromInt(0x40013C00);
+
+test "field_offsets" {
+    const expect = @import("std").testing.expect;
+
+    try expect(@offsetOf(EXTI, "imr") == 0x00);
+    try expect(@offsetOf(EXTI, "emr") == 0x04);
+    try expect(@offsetOf(EXTI, "rtsr") == 0x08);
+    try expect(@offsetOf(EXTI, "ftsr") == 0x0C);
+    try expect(@offsetOf(EXTI, "swier") == 0x10);
+    try expect(@offsetOf(EXTI, "pr") == 0x14);
 }
 
 // Pointer to the top of the stack. It isn't really a function
