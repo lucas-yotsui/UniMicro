@@ -28,5 +28,6 @@ fn startup_logic() callconv(.C) void {
 }
 
 comptime {
-    @export(startup_logic, .{ .name = @import("hal/interrupts.zig").interrupt_handler_name(.RESET) });
+    const interrupts = @import("hal/interrupts.zig");
+    interrupts.register_interrupt_handler(startup_logic, .RESET);
 }
