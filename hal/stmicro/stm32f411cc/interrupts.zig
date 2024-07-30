@@ -1,5 +1,4 @@
 const InterruptSource = enum {
-    RESET,
     NMI,
     HARD_FAULT,
     MEMORY_MANAGEMENT_FAULT,
@@ -70,8 +69,7 @@ const InterruptSource = enum {
 
 pub inline fn register_interrupt_handler(comptime callback: anytype, source: InterruptSource) void {
     const symbol_name = switch (source) {
-        .RESET => "reset_handler",
-        .NMI => "nmi_handler",
+        .NMI => "nmi_fault_handler",
         .HARD_FAULT => "hard_fault_handler",
         .MEMORY_MANAGEMENT_FAULT => "memory_management_fault_handler",
         .BUS_FAULT => "bus_fault_handler",
@@ -336,8 +334,8 @@ test "field_offsets" {
 // this is a temporary solution
 extern fn _stack_top() void;
 
-extern fn reset_handler() callconv(.C) void;
-extern fn nmi_handler() callconv(.C) void;
+extern fn unimicro_main() callconv(.C) noreturn;
+extern fn nmi_fault_handler() callconv(.C) void;
 extern fn hard_fault_handler() callconv(.C) void;
 extern fn memory_management_fault_handler() callconv(.C) void;
 extern fn bus_fault_handler() callconv(.C) void;
@@ -412,8 +410,8 @@ export fn default_handler() noreturn {
 
 export const vector_table linksection(".vector") = [_]?*const fn () callconv(.C) void{
     _stack_top, // Pointer to the top of the Stack
-    reset_handler, // Reset handler
-    nmi_handler, // NMI handler
+    unimicro_main, // Reset handler
+    nmi_fault_handler, // NMI handler
     hard_fault_handler, // Hard fault handler
     memory_management_fault_handler, // Memory management fault handler
     bus_fault_handler, // Bus fault handler
