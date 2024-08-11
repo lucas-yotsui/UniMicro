@@ -4,21 +4,16 @@ pub fn build(b: *std.Build) void {
     _ = b;
 }
 
-const UniMicro = @This();
-
-pub fn init(b: *std.Build, options: UniMicroOptions) void {
-    // Inherit the optimization option from the user's build process.
-    const optimization_level = b.standardOptimizeOption(.{});
-
+pub fn init(b: *std.Build, options: UniMicroOptions) *std.Build.Step.InstallFile {
     // Determine the architecture to be used.
     const target = b.resolveTargetQuery(options.target_platform.cpu.target);
 
     // Compile the ELF
     const elf = b.addExecutable(.{
-        .name = options.name ++ ".elf",
+        .name = b.fmt("{s}.elf", .{options.name}),
         .root_source_file = .{ .cwd_relative = root() ++ "/main.zig" },
         .target = target,
-        .optimize = options.optimize orelse optimization_level,
+        .optimize = options.optimization_level,
         .single_threaded = options.target_platform.single_threaded,
         .linkage = .static,
     });
@@ -37,15 +32,15 @@ pub fn init(b: *std.Build, options: UniMicroOptions) void {
             }),
         },
         .target = target,
-        .optimize = optimization_level,
+        .optimize = options.optimization_level,
         .single_threaded = options.target_platform.single_threaded,
     });
 
     // Create an app module containing the user's code.
     const app_module = b.createModule(.{
-        .root_source_file = options.root_source_file,
+        .root_source_file = options.main_file,
         .target = target,
-        .optimize = optimization_level,
+        .optimize = options.optimization_level,
         .single_threaded = options.target_platform.single_threaded,
         .imports = &.{
             .{ .name = "UniMicro", .module = hal_module },
@@ -64,7 +59,7 @@ pub fn init(b: *std.Build, options: UniMicroOptions) void {
             options.target_platform.cpu.name,
         }) },
         .target = target,
-        .optimize = optimization_level,
+        .optimize = options.optimization_level,
         .single_threaded = options.target_platform.single_threaded,
     });
 
@@ -109,7 +104,7 @@ pub fn init(b: *std.Build, options: UniMicroOptions) void {
     const copy_bin = b.addInstallBinFile(bin.getOutput(), b.fmt("{s}.bin", .{options.name}));
     b.default_step.dependOn(&copy_bin.step);
 
-    options.add_build_options(b, copy_bin);
+    return copy_bin;
 }
 
 inline fn root() []const u8 {
@@ -118,15 +113,14 @@ inline fn root() []const u8 {
 
 pub const UniMicroOptions = struct {
     name: []const u8,
-    root_source_file: std.Build.LazyPath,
-    optimize: ?std.builtin.OptimizeMode = null,
+    main_file: std.Build.LazyPath,
+    optimization_level: std.builtin.OptimizeMode,
     target_platform: Chip,
-    add_build_options: fn (b: *std.Build, install_file_step: *std.Build.Step.InstallFile) void,
 };
 
 pub const supported_chips = .{
     .stmicro = .{
-        .stm32f411cc = Chip{
+        .stm32f411cc = .{
             .manufacturer = "stmicro",
             .name = "stm32f411cc",
             .cpu = supported_cpus.arm.cortex_m4f,
