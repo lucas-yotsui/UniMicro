@@ -1,5 +1,5 @@
 const std = @import("std");
-const Chip = @import("UniMicro").Chip;
+const Chip = @import("UniMicro/build").Chip;
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
