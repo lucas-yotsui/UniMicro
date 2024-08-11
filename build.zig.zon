@@ -1,5 +1,5 @@
 .{
-    .name = "UniMicro",
+    .name = "UniMicro/build",
     .version = "0.0.1",
     .minimum_zig_version = "0.11.0",
     .paths = .{

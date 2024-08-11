@@ -36,6 +36,9 @@ pub fn init(b: *std.Build, options: UniMicroOptions) *std.Build.Step.InstallFile
         .single_threaded = options.target_platform.single_threaded,
     });
 
+    // Add the app module as an import on the main.zig file.
+    elf.root_module.addImport("UniMicro", hal_module);
+
     // Create an app module containing the user's code.
     const app_module = b.createModule(.{
         .root_source_file = options.main_file,
@@ -75,7 +78,7 @@ pub fn init(b: *std.Build, options: UniMicroOptions) *std.Build.Step.InstallFile
     });
 
     // Add an import "UniMicro" to the linker_generator executable.
-    linker_gen.root_module.addImport("UniMicro", b.createModule(.{
+    linker_gen.root_module.addImport("UniMicro/build", b.createModule(.{
         .root_source_file = .{ .cwd_relative = root() ++ "/build.zig" },
     }));
 
