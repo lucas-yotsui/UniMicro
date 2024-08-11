@@ -1,5 +1,5 @@
 const ResetAndClockControl = packed struct {
-    const CR = packed struct(u32) {
+    CR: packed struct(u32) {
         hsi_on: bool,
         hsi_ready: bool,
         _reserved1: u1,
@@ -15,9 +15,8 @@ const ResetAndClockControl = packed struct {
         pll_i2s_on: bool,
         pll_i2s_ready: bool,
         _reserved3: u4,
-    };
-
-    const PLLCFGR = packed struct(u32) {
+    },
+    PLLCFGR: packed struct(u32) {
         const PLLSource = enum(u1) {
             HSI = 0,
             HSE = 1,
@@ -32,9 +31,8 @@ const ResetAndClockControl = packed struct {
         _reserved3: u1,
         pllq: u4,
         _reserved4: u4,
-    };
-
-    const CFGR = packed struct(u32) {
+    },
+    CFGR: packed struct(u32) {
         const SystemClockSwitch = enum(u2) {
             HSI = 0b00,
             HSE = 0b01,
@@ -135,9 +133,8 @@ const ResetAndClockControl = packed struct {
         mco1pre: MicrocontrolleClockDivisionFactor,
         mco2pre: MicrocontrolleClockDivisionFactor,
         mco2: Microcontroller2ClockOutputSwitch,
-    };
-
-    const CIR = packed struct(u32) {
+    },
+    CIR: packed struct(u32) {
         lsi_ready_int_flag: bool,
         lse_ready_int_flag: bool,
         hsi_ready_int_flag: bool,
@@ -162,9 +159,8 @@ const ResetAndClockControl = packed struct {
         _reserved3: u1,
         clock_security_int_clear: bool,
         _reserved4: u8,
-    };
-
-    const AHB1RST = packed struct(u32) {
+    },
+    AHB1RST: packed struct(u32) {
         gpio_a: bool,
         gpio_b: bool,
         gpio_c: bool,
@@ -178,15 +174,14 @@ const ResetAndClockControl = packed struct {
         dma1: bool,
         dma2: bool,
         _reserved4: u9,
-    };
-
-    const AHB2RST = packed struct(u32) {
+    },
+    AHB2RST: packed struct(u32) {
         _reserved1: u7,
         usb_otg_fs: bool,
         _reserved2: u24,
-    };
-
-    const APB1RST = packed struct(u32) {
+    },
+    _reserved1: u64,
+    APB1RST: packed struct(u32) {
         timer2: bool,
         timer3: bool,
         timer4: bool,
@@ -205,9 +200,8 @@ const ResetAndClockControl = packed struct {
         _reserved5: u4,
         power_interface: bool,
         _reserved: u3,
-    };
-
-    const APB2RST = packed struct(u32) {
+    },
+    APB2RST: packed struct(u32) {
         timer1: bool,
         _reserved1: u3,
         usart1: bool,
@@ -226,9 +220,9 @@ const ResetAndClockControl = packed struct {
         _reserved5: u1,
         spi5: bool,
         _reserved6: u11,
-    };
-
-    const AHB1EN = packed struct(u32) {
+    },
+    _reserved2: u64,
+    AHB1EN: packed struct(u32) {
         gpio_a: bool,
         gpio_b: bool,
         gpio_c: bool,
@@ -242,15 +236,14 @@ const ResetAndClockControl = packed struct {
         dma1: bool,
         dma2: bool,
         _reserved4: u9,
-    };
-
-    const AHB2EN = packed struct(u32) {
+    },
+    AHB2EN: packed struct(u32) {
         _reserved1: u7,
         usb_otg_fs: bool,
         _reserved2: u24,
-    };
-
-    const APB1EN = packed struct(u32) {
+    },
+    _reserved3: u64,
+    APB1EN: packed struct(u32) {
         timer2: bool,
         timer3: bool,
         timer4: bool,
@@ -269,9 +262,8 @@ const ResetAndClockControl = packed struct {
         _reserved5: u4,
         power_interface: bool,
         _reserved6: u3,
-    };
-
-    const APB2EN = packed struct(u32) {
+    },
+    APB2EN: packed struct(u32) {
         timer1: bool,
         _reserved1: u3,
         usart1: bool,
@@ -290,9 +282,9 @@ const ResetAndClockControl = packed struct {
         _reserved5: u1,
         spi5: bool,
         _reserved6: u11,
-    };
-
-    const AHB1LPEN = packed struct(u32) {
+    },
+    _reserved4: u64,
+    AHB1LPEN: packed struct(u32) {
         gpio_a: bool,
         gpio_b: bool,
         gpio_c: bool,
@@ -309,32 +301,12 @@ const ResetAndClockControl = packed struct {
         dma1: bool,
         dma2: bool,
         _reserved6: u9,
-    };
-
-    const AHB2LPEN = packed struct(u32) {
+    },
+    AHB2LPEN: packed struct(u32) {
         _reserved1: u7,
         usb_otg_fs: bool,
         _reserved2: u24,
-    };
-
-    cr: CR,
-    pllcfg: PLLCFGR,
-    cfgr: CFGR,
-    cir: CIR,
-    ahb1rst: AHB1RST,
-    ahb2rst: AHB2RST,
-    _reserved1: u64,
-    apb1rst: APB1RST,
-    apb2rst: APB2RST,
-    _reserved2: u64,
-    ahb1en: AHB1EN,
-    ahb2en: AHB2EN,
-    _reserved3: u64,
-    apb1en: APB1EN,
-    apb2en: APB2EN,
-    _reserved4: u64,
-    ahb1lpen: AHB1LPEN,
-    ahb2lpen: AHB2LPEN,
+    },
     _reserved5: u64,
 };
 

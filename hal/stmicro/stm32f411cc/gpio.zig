@@ -1,6 +1,6 @@
 const Gpio = packed struct {
-    const MODE = packed struct(u32) {
-        const Mode = enum(u2) {
+    MODE: packed struct(u32) {
+        pub const Mode = enum(u2) {
             INPUT = 0b00,
             OUTPUT = 0b01,
             ALTERNATE_FUNCTION = 0b10,
@@ -23,9 +23,8 @@ const Gpio = packed struct {
         pin13: Mode,
         pin14: Mode,
         pin15: Mode,
-    };
-
-    const OTYPE = packed struct(u32) {
+    },
+    OTYPE: packed struct(u32) {
         const Config = enum(u1) {
             PUSH_PULL = 0,
             OPEN_DRAIN = 1,
@@ -48,9 +47,8 @@ const Gpio = packed struct {
         pin14: Config,
         pin15: Config,
         _reserved: u16,
-    };
-
-    const OSPEED = packed struct(u32) {
+    },
+    OSPEED: packed struct(u32) {
         const Speed = enum(u2) {
             LOW = 0b00,
             MEDIUM = 0b01,
@@ -74,9 +72,8 @@ const Gpio = packed struct {
         pin13: Speed,
         pin14: Speed,
         pin15: Speed,
-    };
-
-    const PUPD = packed struct(u32) {
+    },
+    PUPD: packed struct(u32) {
         const PullUpOrPullDown = enum(u2) {
             NO_PULL = 0b00,
             PULL_UP = 0b01,
@@ -100,9 +97,8 @@ const Gpio = packed struct {
         pin13: PullUpOrPullDown,
         pin14: PullUpOrPullDown,
         pin15: PullUpOrPullDown,
-    };
-
-    const IDATA = packed struct(u32) {
+    },
+    IDATA: packed struct(u32) {
         pin0: bool,
         pin1: bool,
         pin2: bool,
@@ -120,9 +116,8 @@ const Gpio = packed struct {
         pin14: bool,
         pin15: bool,
         _reserved: u16 = 0,
-    };
-
-    const ODATA = packed struct(u32) {
+    },
+    ODATA: packed struct(u32) {
         pin0: bool,
         pin1: bool,
         pin2: bool,
@@ -140,9 +135,8 @@ const Gpio = packed struct {
         pin14: bool,
         pin15: bool,
         _reserved: u16 = 0,
-    };
-
-    const BSR = packed struct(u32) {
+    },
+    BSR: packed struct(u32) {
         set_pin0: bool,
         set_pin1: bool,
         set_pin2: bool,
@@ -175,9 +169,8 @@ const Gpio = packed struct {
         reset_pin13: bool,
         reset_pin14: bool,
         reset_pin15: bool,
-    };
-
-    const LCK = packed struct(u32) {
+    },
+    LCK: packed struct(u32) {
         pin0: bool,
         pin1: bool,
         pin2: bool,
@@ -196,7 +189,27 @@ const Gpio = packed struct {
         pin15: bool,
         lock_bit: bool,
         _reserved: u15,
-    };
+    },
+    AFRL: packed struct(u32) {
+        pin0: AlternateFunction,
+        pin1: AlternateFunction,
+        pin2: AlternateFunction,
+        pin3: AlternateFunction,
+        pin4: AlternateFunction,
+        pin5: AlternateFunction,
+        pin6: AlternateFunction,
+        pin7: AlternateFunction,
+    },
+    AFRH: packed struct(u32) {
+        pin8: AlternateFunction,
+        pin9: AlternateFunction,
+        pin10: AlternateFunction,
+        pin11: AlternateFunction,
+        pin12: AlternateFunction,
+        pin13: AlternateFunction,
+        pin14: AlternateFunction,
+        pin15: AlternateFunction,
+    },
 
     const AlternateFunction = enum(u4) {
         ALT_FUNCTION_0 = 0b0000,
@@ -217,46 +230,13 @@ const Gpio = packed struct {
         ALT_FUNCTION_15 = 0b1111,
     };
 
-    const AFRL = packed struct(u32) {
-        pin0: AlternateFunction,
-        pin1: AlternateFunction,
-        pin2: AlternateFunction,
-        pin3: AlternateFunction,
-        pin4: AlternateFunction,
-        pin5: AlternateFunction,
-        pin6: AlternateFunction,
-        pin7: AlternateFunction,
-    };
-
-    const AFRH = packed struct(u32) {
-        pin8: AlternateFunction,
-        pin9: AlternateFunction,
-        pin10: AlternateFunction,
-        pin11: AlternateFunction,
-        pin12: AlternateFunction,
-        pin13: AlternateFunction,
-        pin14: AlternateFunction,
-        pin15: AlternateFunction,
-    };
-
-    mode: MODE,
-    output_type: OTYPE,
-    output_speed: OSPEED,
-    pull_up_or_pull_down: PUPD,
-    input_data: IDATA,
-    output_data: ODATA,
-    output_set_and_reset: BSR,
-    lock_pins_config: LCK,
-    alt_function_pins_0_to_7: AFRL,
-    alt_function_pins_8_to_15: AFRH,
-
-    pub fn enable_pin(self: *volatile Gpio, pin: comptime_int, pin_mode: MODE.Mode) void {
+    pub fn enable_pin(self: *volatile Gpio, pin: comptime_int, pin_mode: @TypeOf(Gpio.MODE).Mode) void {
         const field_name = comptime blk: {
             var buffer: [4 + (pin / 10)]u8 = undefined;
             break :blk try @import("std").fmt.bufPrint(&buffer, "pin{d}", .{pin});
         };
 
-        @field(self.mode, field_name) = pin_mode;
+        @field(self.MODE, field_name) = pin_mode;
     }
 
     pub fn set_pin(self: *volatile Gpio, pin: comptime_int, state: bool) void {
@@ -266,9 +246,9 @@ const Gpio = packed struct {
         };
 
         // This function only works if the pin is set as Output
-        if (@field(self.mode, field_name) != .OUTPUT) return;
+        if (@field(self.MODE, field_name) != .OUTPUT) return;
 
-        @field(self.output_data, field_name) = state;
+        @field(self.ODATA, field_name) = state;
     }
 };
 
@@ -282,14 +262,14 @@ pub const portH: *volatile Gpio = @ptrFromInt(0x40021C00);
 test "field_offsets" {
     const expect = @import("std").testing.expect;
 
-    try expect(@offsetOf(Gpio, "mode") == 0x00);
-    try expect(@offsetOf(Gpio, "output_type") == 0x04);
-    try expect(@offsetOf(Gpio, "output_speed") == 0x08);
-    try expect(@offsetOf(Gpio, "pull_up_or_pull_down") == 0x0C);
-    try expect(@offsetOf(Gpio, "input_data") == 0x10);
-    try expect(@offsetOf(Gpio, "output_data") == 0x14);
-    try expect(@offsetOf(Gpio, "output_set_and_reset") == 0x18);
-    try expect(@offsetOf(Gpio, "lock_pins_config") == 0x1C);
-    try expect(@offsetOf(Gpio, "alt_function_pins_0_to_7") == 0x20);
-    try expect(@offsetOf(Gpio, "alt_function_pins_8_to_15") == 0x24);
+    try expect(@offsetOf(Gpio, "MODE") == 0x00);
+    try expect(@offsetOf(Gpio, "OTYPE") == 0x04);
+    try expect(@offsetOf(Gpio, "OSPEED") == 0x08);
+    try expect(@offsetOf(Gpio, "PUPD") == 0x0C);
+    try expect(@offsetOf(Gpio, "IDATA") == 0x10);
+    try expect(@offsetOf(Gpio, "ODATA") == 0x14);
+    try expect(@offsetOf(Gpio, "BSR") == 0x18);
+    try expect(@offsetOf(Gpio, "LCK") == 0x1C);
+    try expect(@offsetOf(Gpio, "AFRL") == 0x20);
+    try expect(@offsetOf(Gpio, "AFRH") == 0x24);
 }
