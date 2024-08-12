@@ -152,7 +152,7 @@ pub inline fn register_interrupt_handler(comptime callback: anytype, source: Int
 }
 
 const EXTI = packed struct {
-    const IMR = packed struct(u32) {
+    IMR: packed struct(u32) {
         line_0: bool,
         line_1: bool,
         line_2: bool,
@@ -176,9 +176,8 @@ const EXTI = packed struct {
         line_21: bool,
         line_22: bool,
         _reserved2: u9,
-    };
-
-    const EMR = packed struct(u32) {
+    },
+    EMR: packed struct(u32) {
         line_0: bool,
         line_1: bool,
         line_2: bool,
@@ -202,9 +201,8 @@ const EXTI = packed struct {
         line_21: bool,
         line_22: bool,
         _reserved2: u9,
-    };
-
-    const RTSR = packed struct(u32) {
+    },
+    RTSR: packed struct(u32) {
         line_0: bool,
         line_1: bool,
         line_2: bool,
@@ -228,9 +226,8 @@ const EXTI = packed struct {
         line_21: bool,
         line_22: bool,
         _reserved2: u9,
-    };
-
-    const FTSR = packed struct(u32) {
+    },
+    FTSR: packed struct(u32) {
         line_0: bool,
         line_1: bool,
         line_2: bool,
@@ -254,9 +251,8 @@ const EXTI = packed struct {
         line_21: bool,
         line_22: bool,
         _reserved2: u9,
-    };
-
-    const SWIER = packed struct(u32) {
+    },
+    SWIER: packed struct(u32) {
         line_0: bool,
         line_1: bool,
         line_2: bool,
@@ -280,9 +276,8 @@ const EXTI = packed struct {
         line_21: bool,
         line_22: bool,
         _reserved2: u9,
-    };
-
-    const PR = packed struct(u32) {
+    },
+    PR: packed struct(u32) {
         line_0: bool,
         line_1: bool,
         line_2: bool,
@@ -306,14 +301,7 @@ const EXTI = packed struct {
         line_21: bool,
         line_22: bool,
         _reserved2: u9,
-    };
-
-    imr: IMR,
-    emr: EMR,
-    rtsr: RTSR,
-    ftsr: FTSR,
-    swier: SWIER,
-    pr: PR,
+    },
 };
 
 pub const exti: *volatile EXTI = @ptrFromInt(0x40013C00);
@@ -321,12 +309,12 @@ pub const exti: *volatile EXTI = @ptrFromInt(0x40013C00);
 test "field_offsets" {
     const expect = @import("std").testing.expect;
 
-    try expect(@offsetOf(EXTI, "imr") == 0x00);
-    try expect(@offsetOf(EXTI, "emr") == 0x04);
-    try expect(@offsetOf(EXTI, "rtsr") == 0x08);
-    try expect(@offsetOf(EXTI, "ftsr") == 0x0C);
-    try expect(@offsetOf(EXTI, "swier") == 0x10);
-    try expect(@offsetOf(EXTI, "pr") == 0x14);
+    try expect(@offsetOf(EXTI, "IMR") == 0x00);
+    try expect(@offsetOf(EXTI, "EMR") == 0x04);
+    try expect(@offsetOf(EXTI, "RTSR") == 0x08);
+    try expect(@offsetOf(EXTI, "FTSR") == 0x0C);
+    try expect(@offsetOf(EXTI, "SWIER") == 0x10);
+    try expect(@offsetOf(EXTI, "PR") == 0x14);
 }
 
 // Pointer to the top of the stack. It isn't really a function
