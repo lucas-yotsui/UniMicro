@@ -6,7 +6,7 @@ extern var _edata: u8;
 extern var _bss: u8;
 extern var _ebss: u8;
 
-pub fn startup() callconv(.C) void {
+pub inline fn startup() void {
     // Copy data segment from flash to sram
     const data: [*]u8 = @ptrCast(&_data);
     const data_loadaddr: [*]u8 = @ptrCast(&_data_loadaddr);
