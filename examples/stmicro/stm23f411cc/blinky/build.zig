@@ -2,7 +2,7 @@ const std = @import("std");
 const UniMicro = @import("UniMicro/build");
 
 pub fn build(b: *std.Build) void {
-    const optimization_level = b.standardOptimizeOption(.{ .preferred_optimize_mode = .ReleaseSmall });
+    const optimization_level = b.standardOptimizeOption(.{ .preferred_optimize_mode = .ReleaseFast });
 
     var install_step = UniMicro.init(b, .{
         .name = "blinky",
