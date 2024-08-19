@@ -97,11 +97,6 @@ pub fn main() !void {
         else => {},
     }
 
-    for (target.interrupts) |interrupt| {
-        try writer.print("PROVIDE({s}_handler = default_handler);\n", .{interrupt});
-    }
-    try writer.writeAll("\n");
-
     // -------------------------------- Map memory sections -------------------------------- \\
     try writer.writeAll("\nSECTIONS {\n");
     try writer.writeAll(
