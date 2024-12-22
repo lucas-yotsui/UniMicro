@@ -138,7 +138,7 @@ pub const UniMicroOptions = struct {
 
 pub const supported_chips = .{
     .stmicro = .{
-        .stm32f411cc = .{
+        .stm32f411cc = Chip{
             .manufacturer = "stmicro",
             .name = "stm32f411cc",
             .cpu = supported_cpus.arm.cortex_m4f,
