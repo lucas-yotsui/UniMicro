@@ -37,20 +37,20 @@ export fn unimicro_main() callconv(.C) noreturn {
     // If user provided a custom startup function, call it.
     if (@hasDecl(app, "startup")) {
         // Check if user's startup is valid.
-        const startup_info = @typeInfo(@TypeOf(app.main));
+        const startup_info = @typeInfo(@TypeOf(app.startup));
 
         // If it is not a function
         if (startup_info != .Fn)
-            @compileError(std.fmt.comptimePrint("You have declared a 'main' symbol, but it isn't a function! It is declared as a {s}", .{startup_info.Type}));
+            @compileError(std.fmt.comptimePrint("You have declared a 'startup' symbol, but it isn't a function! It is declared as a {s}", .{startup_info.Type}));
 
         // If it takes any arguments
         if (startup_info.Fn.params.len > 0)
-            @compileError(std.fmt.comptimePrint("You have declared a 'main' function that takes parameters! It should take none, but takes {s}", .{startup_info.Fn.params}));
+            @compileError(std.fmt.comptimePrint("You have declared a 'startup' function that takes parameters! It should take none, but takes {s}", .{startup_info.Fn.params}));
 
         // If it returns anything
         const startup_return_type = startup_info.Fn.return_type orelse u8;
         if (startup_return_type != void)
-            @compileError(std.fmt.comptimePrint("You have declared a 'main' function that returns something! It should be void, but it returns {s}", .{main_info.Fn.return_type}));
+            @compileError(std.fmt.comptimePrint("You have declared a 'startup' function that returns something! It should be void, but it returns {s}", .{startup_info.Fn.return_type}));
 
         app.startup();
     } else {
