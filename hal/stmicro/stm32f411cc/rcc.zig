@@ -1815,15 +1815,15 @@ const ResetAndClockControl = packed struct {
             /// Clear the reset flags
             CLEAR_RESET_FLAGS = 1,
         },
-        /// BOR reset flag
+        /// BOR (brownout) reset flag
         ///
         /// Cleared by software by writing the RMVF bit.
         ///
-        /// Set by hardware when a POR/PDR or BOR reset occurs.
+        /// Set by hardware when a POR/PDR (Power-on/power-down) or BOR (brownout) reset occurs.
         BORRSTF: enum(u1) {
-            /// No POR/PDR or BOR reset occurred
+            /// No POR/PDR (Power-on/power-down) or BOR (brownout) reset occurred
             NO_POR_PDR_or_BOR_RESET = 0,
-            /// POR/PDR or BOR reset occurred
+            /// POR/PDR (Power-on/power-down) or BOR (brownout) reset occurred
             POR_PDR_or_BOR_RESET = 1,
         },
         /// PIN reset flag
@@ -1837,15 +1837,15 @@ const ResetAndClockControl = packed struct {
             /// Reset from NRST pin occurred
             NRST_RESET = 1,
         },
-        /// POR/PDR reset flag
+        /// POR/PDR (Power-on/power-down) reset flag
         ///
-        /// Set by hardware when a POR/PDR reset occurs.
+        /// Set by hardware when a POR/PDR (Power-on/power-down) reset occurs.
         ///
         /// Cleared by writing to the RMVF bit.
         PORRSTF: enum(u1) {
-            /// No POR/PDR reset occurred
+            /// No POR/PDR (Power-on/power-down) reset occurred
             NO_POR_PDR_RESET = 0,
-            /// POR/PDR reset occurred
+            /// POR/PDR (Power-on/power-down) reset occurred
             POR_PDR_RESET = 1,
         },
         /// Software reset flag
@@ -1991,6 +1991,8 @@ const ResetAndClockControl = packed struct {
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u7,
     },
+
+    pub fn enable_peripheral() !void {}
 };
 
 /// Reset and clock control
