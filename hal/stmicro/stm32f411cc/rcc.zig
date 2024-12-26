@@ -2086,6 +2086,57 @@ const ResetAndClockControl = packed struct {
 
             self.PLLCFGR.PLLSRC = .HSI;
 
+            const HPRE_div = comptime blk: {
+                for (.{ 1, 2, 4, 8, 16 }) |div| {
+                    const MAX_APB1_CLOCK = 50_000;
+                    if (clock_in_khz / div <= MAX_APB1_CLOCK)
+                        break :blk div;
+                }
+            };
+
+            self.CFGR.HPRE = switch (HPRE_div) {
+                1 => .NO_DIVISOR,
+                2 => .DIV_BY_2,
+                4 => .DIV_BY_4,
+                8 => .DIV_BY_8,
+                16 => .DIV_BY_16,
+                else => unreachable,
+            };
+
+            self.CFGR.PPRE1 = comptime blk: {
+                const divisor = for (.{ 1, 2, 4, 8, 16 }) |div| {
+                    const MAX_APB1_CLOCK = 50_000;
+                    if ((clock_in_khz / (HPRE_div * div)) <= MAX_APB1_CLOCK)
+                        break div;
+                };
+
+                break :blk switch (divisor) {
+                    1 => .NO_DIVISOR,
+                    2 => .DIV_BY_2,
+                    4 => .DIV_BY_4,
+                    8 => .DIV_BY_8,
+                    16 => .DIV_BY_16,
+                    else => unreachable,
+                };
+            };
+
+            self.CFGR.PPRE2 = comptime blk: {
+                const divisor = for (.{ 1, 2, 4, 8, 16 }) |div| {
+                    const MAX_APB2_CLOCK = 100_000;
+                    if ((clock_in_khz / (HPRE_div * div)) <= MAX_APB2_CLOCK)
+                        break div;
+                };
+
+                break :blk switch (divisor) {
+                    1 => .NO_DIVISOR,
+                    2 => .DIV_BY_2,
+                    4 => .DIV_BY_4,
+                    8 => .DIV_BY_8,
+                    16 => .DIV_BY_16,
+                    else => unreachable,
+                };
+            };
+
             self.CR.PLLON = .PLL_ON;
             while (self.CR.PLLRDY != .PLL_LOCKED) asm volatile ("");
 
