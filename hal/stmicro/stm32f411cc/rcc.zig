@@ -2137,11 +2137,12 @@ const ResetAndClockControl = packed struct {
                 };
             };
 
+            // FIXME: The while check are commented out because otherwise the function simply causes a fault. Only God knows why that is happening, but it is. Until he blesses me with that knowledge, this will stay like this.
             self.CR.PLLON = .PLL_ON;
-            while (self.CR.PLLRDY != .PLL_LOCKED) asm volatile ("");
+            // while (self.CR.PLLRDY != .PLL_LOCKED) asm volatile ("");
 
             self.CFGR.SW = .PLL;
-            while (self.CFGR.SWS != .PLL) asm volatile ("");
+            // while (self.CFGR.SWS != .PLL) asm volatile ("");
 
             self.CR.HSEON = .HSE_OFF;
         }
