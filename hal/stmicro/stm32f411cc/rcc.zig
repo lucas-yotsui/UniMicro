@@ -1992,7 +1992,170 @@ const ResetAndClockControl = packed struct {
         _reserved2: u7,
     },
 
-    pub fn enable_peripheral() !void {}
+    /// Parameters taken by the set_system_clock function.
+    const SystemClockConfig = struct {
+        /// The desired clock for the system.
+        clock: Frequency,
+        // is your application going to use USB? If so, the clock might differ from the specified to ensure the proper functioning of this peripheral (USB requires a 48 MHz clock and SDIO must be <= 50 MHz [UniMicro uses 48 to avoid conflicts with USB]).
+        using_usb_or_sdio: bool = false,
+        /// If your system has an available HSE (High Speed External oscillator) and you wish to use it for extra precision, pass its frequency here. If nothing is passed, it's assumed that the system does not have it or the user does not want to use it. In this case, the HSI is used as the clock source instead.
+        hse: ?Frequency = null,
+
+        /// Type of the clock value, if clock is in the kHz range set its value on the kHz field. If it is in the MHz range, set it in the MHz field.
+        ///
+        /// OBS: Please note that the maximum system clock for this chip is 100 MHz, which means that any value greater than that will be rejected by this function. Also note that the fields were created in this manner for a reason, please don't try to represent a 100 MHz frequency as 100.000 kHz, as it will also throw an error (this was done to use a shorter int size).
+        const Frequency = union(enum) {
+            /// If the clock is in the MHz range, set it here.
+            ///
+            /// OBS: This field is a 7 bits sized unsigned integer, since the biggest value accepted in it is 100, which fits in a 7 bit unsigned integer.
+            MHz: u7,
+            /// If the clock is in the kHz range, set it here.
+            ///
+            /// OBS: This field is a 17 bits sized unsigned integer, since the biggest value accepted in it is 99.999, which fits in a 17 bit unsigned integer.
+            kHz: u17,
+        };
+    };
+
+    // FIXME: This shit is still not working, it keeps calling a handler, so I assume some of the faults, but I don't know which one.
+    // For some reason, reading the PLLRDY bit in the CR register seems to be generating a fault, calling the interrupt handler.
+    // I don't have any further information since my debugger is not really 100%, so that's what I have so far.
+
+    /// Set the system clock to a desired value or the closest possible to it.
+    ///
+    /// This function attempts to find the coefficients for the PLL configuration register to match the desired value. If the desired clock is impossible using the selected clock soure, the closest possible value is used instead.
+    ///
+    /// If the user does not specify on the call that the USB or SDIO modules will be used, the function will not care for it. If those modules are used, make sure to pass it with the 'using_usb_or_sdio' parameter.
+    ///
+    /// By default, this function uses the HSI oscillator. If the user desires to use an HSE, its frequency must be informed in the 'hse' parameter. Please note that the maximum frequency that can be achieved with the HSI oscillator is 96 MHz.
+    pub fn set_system_clock(self: *volatile ResetAndClockControl, comptime config: SystemClockConfig) void {
+        const clock_in_khz: u32 = comptime switch (config.clock) {
+            .kHz => |value| @as(u32, value),
+            .MHz => |value| @as(u32, value) * 1000,
+        };
+
+        if (clock_in_khz > 100_000)
+            @compileError("The device does not support a system clock higher than 100 MHz! Please change the function parameters and try again...");
+
+        if (config.hse) |hse_freq| {
+            const hse_freq_in_khz: u32 = comptime switch (hse_freq) {
+                .kHz => |value| @as(u32, value),
+                .MHz => |value| @as(u32, value) * 1000,
+            };
+
+            const coeffs = comptime calculate_PLL(hse_freq_in_khz, clock_in_khz, config.using_usb_or_sdio);
+            self.PLLCFGR.PLLM = coeffs.m;
+            self.PLLCFGR.PLLN = coeffs.n;
+            self.PLLCFGR.PLLP = switch (coeffs.p) {
+                2 => 0b00,
+                4 => 0b01,
+                6 => 0b10,
+                8 => 0b11,
+                else => unreachable,
+            };
+            self.PLLCFGR.PLLQ = coeffs.q;
+
+            self.CR.HSEON = .HSE_ON;
+            while (self.CR.HSERDY != .HSE_READY) asm volatile ("");
+
+            self.PLLCFGR.PLLSRC = .HSE;
+
+            self.CR.PLLON = .PLL_ON;
+            while (self.CR.PLLRDY != .PLL_LOCKED) asm volatile ("");
+
+            self.CFGR.SW = .PLL;
+            while (self.CFGR.SWS != .PLL) asm volatile ("");
+
+            self.CR.HSION = .HSI_OFF;
+        } else {
+            const HSI_FREQ_IN_KHZ = 16 * 1000;
+
+            const coeffs = comptime calculate_PLL(HSI_FREQ_IN_KHZ, clock_in_khz, config.using_usb_or_sdio);
+            self.PLLCFGR.PLLM = coeffs.m;
+            self.PLLCFGR.PLLN = coeffs.n;
+            self.PLLCFGR.PLLP = switch (coeffs.p) {
+                2 => 0b00,
+                4 => 0b01,
+                6 => 0b10,
+                8 => 0b11,
+                else => unreachable,
+            };
+            self.PLLCFGR.PLLQ = coeffs.q;
+
+            self.CR.HSION = .HSI_ON;
+            while (self.CR.HSIRDY != .HSI_READY) asm volatile ("");
+
+            self.PLLCFGR.PLLSRC = .HSI;
+
+            self.CR.PLLON = .PLL_ON;
+            while (self.CR.PLLRDY != .PLL_LOCKED) asm volatile ("");
+
+            self.CFGR.SW = .PLL;
+            while (self.CFGR.SWS != .PLL) asm volatile ("");
+
+            self.CR.HSEON = .HSE_OFF;
+        }
+    }
+
+    const CoefficientsPLL = struct {
+        m: u6,
+        n: u9,
+        p: u4,
+        q: u4,
+    };
+    fn calculate_PLL(comptime input_in_khz: u32, comptime output_in_khz: u32, comptime using_usb_or_sdio: bool) CoefficientsPLL {
+        comptime {
+            const std = @import("std");
+
+            const USB_FREQ_IN_KHZ = 48 * 1000;
+            var best_so_far: CoefficientsPLL = .{
+                .m = 2,
+                .n = 50,
+                .p = 2,
+                .q = 2,
+            };
+            var closest_system_clock = 0;
+            var closest_system_clock_delta = std.math.maxInt(u32);
+
+            // FIXME: There should be a way to determine this exact value, but for now I'm just gonna rawdog it
+            @setEvalBranchQuota(1_000_000_000);
+
+            return blk: {
+                for (2..64) |iter_M| {
+                    for (50..433) |iter_N| {
+                        for (.{ 2, 4, 6, 8 }) |iter_P| {
+                            for (2..16) |iter_Q| {
+                                const current_system_clock = (input_in_khz * iter_N) / (iter_M * iter_P);
+                                const current_system_clock_delta = if (current_system_clock < output_in_khz) output_in_khz - current_system_clock else current_system_clock - output_in_khz;
+
+                                // If using USB or SDIO, their frequency must be 48 MHz
+                                if (using_usb_or_sdio and ((input_in_khz * iter_N) / (iter_M * iter_Q)) != USB_FREQ_IN_KHZ)
+                                    continue;
+
+                                if (current_system_clock == output_in_khz) {
+                                    break :blk .{ .m = iter_M, .n = iter_N, .p = iter_P, .q = iter_Q };
+                                } else if (current_system_clock_delta < closest_system_clock_delta) {
+                                    closest_system_clock = current_system_clock;
+                                    closest_system_clock_delta = current_system_clock_delta;
+
+                                    best_so_far = .{ .m = iter_M, .n = iter_N, .p = iter_P, .q = iter_Q };
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    @compileLog("The desired clock could not be matched exactly!", .{});
+
+                    if (using_usb_or_sdio)
+                        @compileLog("You're using SDIO or USB, which means that this function favored achieving its necessary clock over the desired system clock!", .{});
+
+                    @compileLog("The closest it could get to was: {[clock]d} kHz", .{ .clock = closest_system_clock });
+                    @compileLog("The coefficients used were: M: {[m]d} | N: {[n]d} | P: {[p]d} | Q: {[q]d}", .{ .m = best_so_far.m, .n = best_so_far.n, .p = best_so_far.p, .q = best_so_far.q });
+
+                    break :blk best_so_far;
+                }
+            };
+        }
+    }
 };
 
 /// Reset and clock control
