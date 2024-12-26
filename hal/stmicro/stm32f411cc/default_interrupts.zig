@@ -81,10 +81,6 @@ comptime {
         fn default_int_handler() callconv(.C) void {
             while (true) asm volatile ("");
         }
-
-        comptime {
-            @export(default_int_handler, .{ .name = "default_int_handler", .linkage = .weak });
-        }
     };
 
     const default_nvic: NestedVectorInterruptController = .{};

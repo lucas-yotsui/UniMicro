@@ -102,10 +102,6 @@ pub const NestedVectorInterruptController = extern struct {
     fn default_int_handler() callconv(.C) void {
         while (true) asm volatile ("");
     }
-
-    comptime {
-        @export(default_int_handler, .{ .name = "default_int_handler", .linkage = .strong });
-    }
 };
 
 pub const InterruptSource = enum {
