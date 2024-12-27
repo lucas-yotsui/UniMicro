@@ -158,7 +158,12 @@ const ResetAndClockControl = packed struct {
         /// Caution: The software has to set these bits correctly not to exceed 100 MHz on this domain.
         ///
         /// PLL output clock frequency = VCO frequency / PLLP [with PLLP = 2, 4, 6, or 8].
-        PLLP: u2,
+        PLLP: enum(u2) {
+            DIV_BY_2 = 0b00,
+            DIV_BY_4 = 0b01,
+            DIV_BY_6 = 0b10,
+            DIV_BY_8 = 0b11,
+        },
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u4,
         /// Main PLL(PLL) and audio PLL (PLLI2S) entry clock source
@@ -2046,10 +2051,10 @@ const ResetAndClockControl = packed struct {
             self.PLLCFGR.PLLM = coeffs.m;
             self.PLLCFGR.PLLN = coeffs.n;
             self.PLLCFGR.PLLP = switch (coeffs.p) {
-                2 => 0b00,
-                4 => 0b01,
-                6 => 0b10,
-                8 => 0b11,
+                2 => .DIV_BY_2,
+                4 => .DIV_BY_4,
+                6 => .DIV_BY_6,
+                8 => .DIV_BY_8,
                 else => unreachable,
             };
             self.PLLCFGR.PLLQ = coeffs.q;
@@ -2073,10 +2078,10 @@ const ResetAndClockControl = packed struct {
             self.PLLCFGR.PLLM = coeffs.m;
             self.PLLCFGR.PLLN = coeffs.n;
             self.PLLCFGR.PLLP = switch (coeffs.p) {
-                2 => 0b00,
-                4 => 0b01,
-                6 => 0b10,
-                8 => 0b11,
+                2 => .DIV_BY_2,
+                4 => .DIV_BY_4,
+                6 => .DIV_BY_6,
+                8 => .DIV_BY_8,
                 else => unreachable,
             };
             self.PLLCFGR.PLLQ = coeffs.q;
