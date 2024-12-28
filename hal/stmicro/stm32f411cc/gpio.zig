@@ -817,7 +817,9 @@ const Gpio = packed struct {
         ///
         /// • Read LCKR
         LCKK: packed union {
+            /// Use this field when writing to this bit.
             write: u1,
+            /// Use this enum to interpret data when reading this bit
             read: enum(u1) {
                 /// Port configuration lock key not active
                 UNLOCKED = 0,
