@@ -2021,10 +2021,6 @@ const ResetAndClockControl = packed struct {
         };
     };
 
-    // FIXME: This shit is still not working, it keeps calling a handler, so I assume some of the faults, but I don't know which one.
-    // For some reason, reading the PLLRDY bit in the CR register seems to be generating a fault, calling the interrupt handler.
-    // I don't have any further information since my debugger is not really 100%, so that's what I have so far.
-
     /// Set the system clock to a desired value or the closest possible to it.
     ///
     /// This function attempts to find the coefficients for the PLL configuration register to match the desired value. If the desired clock is impossible using the selected clock soure, the closest possible value is used instead.
@@ -2064,37 +2060,10 @@ const ResetAndClockControl = packed struct {
 
             self.PLLCFGR.PLLSRC = .HSE;
 
-            self.CR.PLLON = .PLL_ON;
-            while (self.CR.PLLRDY != .PLL_LOCKED) asm volatile ("");
-
-            self.CFGR.SW = .PLL;
-            while (self.CFGR.SWS != .PLL) asm volatile ("");
-
-            self.CR.HSION = .HSI_OFF;
-        } else {
-            const HSI_FREQ_IN_KHZ = 16 * 1000;
-
-            const coeffs = comptime calculate_PLL(HSI_FREQ_IN_KHZ, clock_in_khz, config.using_usb_or_sdio);
-            self.PLLCFGR.PLLM = coeffs.m;
-            self.PLLCFGR.PLLN = coeffs.n;
-            self.PLLCFGR.PLLP = switch (coeffs.p) {
-                2 => .DIV_BY_2,
-                4 => .DIV_BY_4,
-                6 => .DIV_BY_6,
-                8 => .DIV_BY_8,
-                else => unreachable,
-            };
-            self.PLLCFGR.PLLQ = coeffs.q;
-
-            self.CR.HSION = .HSI_ON;
-            while (self.CR.HSIRDY != .HSI_READY) asm volatile ("");
-
-            self.PLLCFGR.PLLSRC = .HSI;
-
             const HPRE_div = comptime blk: {
                 for (.{ 1, 2, 4, 8, 16 }) |div| {
-                    const MAX_APB1_CLOCK = 50_000;
-                    if (clock_in_khz / div <= MAX_APB1_CLOCK)
+                    const MAX_AHB_CLOCK = 100_000;
+                    if (clock_in_khz / div <= MAX_AHB_CLOCK)
                         break :blk div;
                 }
             };
@@ -2142,12 +2111,95 @@ const ResetAndClockControl = packed struct {
                 };
             };
 
-            // FIXME: The while check are commented out because otherwise the function simply causes a fault. Only God knows why that is happening, but it is. Until he blesses me with that knowledge, this will stay like this.
             self.CR.PLLON = .PLL_ON;
-            // while (self.CR.PLLRDY != .PLL_LOCKED) asm volatile ("");
+            while (self.CR.PLLRDY != .PLL_LOCKED) asm volatile ("");
+
+            // FIXME: In the datasheet, there's a table that correlates the supply voltage with these values. For now, I've just adopted the values for 3.3V, but ideally this function should use the power interface to determine the suppky voltage and use the appropriate values.
+            @import("flash.zig").flash.ACR.LATENCY = if (clock_in_khz <= 30_000) 0 else if (clock_in_khz <= 64_000) 1 else if (clock_in_khz <= 90_000) 2 else 3;
 
             self.CFGR.SW = .PLL;
-            // while (self.CFGR.SWS != .PLL) asm volatile ("");
+            while (self.CFGR.SWS != .PLL) asm volatile ("");
+
+            self.CR.HSION = .HSI_OFF;
+        } else {
+            const HSI_FREQ_IN_KHZ = 16 * 1000;
+
+            const coeffs = comptime calculate_PLL(HSI_FREQ_IN_KHZ, clock_in_khz, config.using_usb_or_sdio);
+            self.PLLCFGR.PLLM = coeffs.m;
+            self.PLLCFGR.PLLN = coeffs.n;
+            self.PLLCFGR.PLLP = switch (coeffs.p) {
+                2 => .DIV_BY_2,
+                4 => .DIV_BY_4,
+                6 => .DIV_BY_6,
+                8 => .DIV_BY_8,
+                else => unreachable,
+            };
+            self.PLLCFGR.PLLQ = coeffs.q;
+
+            self.CR.HSION = .HSI_ON;
+            while (self.CR.HSIRDY != .HSI_READY) asm volatile ("");
+
+            self.PLLCFGR.PLLSRC = .HSI;
+
+            const HPRE_div = comptime blk: {
+                for (.{ 1, 2, 4, 8, 16 }) |div| {
+                    const MAX_AHB_CLOCK = 100_000;
+                    if (clock_in_khz / div <= MAX_AHB_CLOCK)
+                        break :blk div;
+                }
+            };
+
+            self.CFGR.HPRE = switch (HPRE_div) {
+                1 => .NO_DIVISOR,
+                2 => .DIV_BY_2,
+                4 => .DIV_BY_4,
+                8 => .DIV_BY_8,
+                16 => .DIV_BY_16,
+                else => unreachable,
+            };
+
+            self.CFGR.PPRE1 = comptime blk: {
+                const divisor = for (.{ 1, 2, 4, 8, 16 }) |div| {
+                    const MAX_APB1_CLOCK = 50_000;
+                    if ((clock_in_khz / (HPRE_div * div)) <= MAX_APB1_CLOCK)
+                        break div;
+                };
+
+                break :blk switch (divisor) {
+                    1 => .NO_DIVISOR,
+                    2 => .DIV_BY_2,
+                    4 => .DIV_BY_4,
+                    8 => .DIV_BY_8,
+                    16 => .DIV_BY_16,
+                    else => unreachable,
+                };
+            };
+
+            self.CFGR.PPRE2 = comptime blk: {
+                const divisor = for (.{ 1, 2, 4, 8, 16 }) |div| {
+                    const MAX_APB2_CLOCK = 100_000;
+                    if ((clock_in_khz / (HPRE_div * div)) <= MAX_APB2_CLOCK)
+                        break div;
+                };
+
+                break :blk switch (divisor) {
+                    1 => .NO_DIVISOR,
+                    2 => .DIV_BY_2,
+                    4 => .DIV_BY_4,
+                    8 => .DIV_BY_8,
+                    16 => .DIV_BY_16,
+                    else => unreachable,
+                };
+            };
+
+            self.CR.PLLON = .PLL_ON;
+            while (self.CR.PLLRDY != .PLL_LOCKED) asm volatile ("");
+
+            // FIXME: In the datasheet, there's a table that correlates the supply voltage with these values. For now, I've just adopted the values for 3.3V, but ideally this function should use the power interface to determine the suppky voltage and use the appropriate values.
+            @import("flash.zig").flash.ACR.LATENCY = if (clock_in_khz <= 30_000) 0 else if (clock_in_khz <= 64_000) 1 else if (clock_in_khz <= 90_000) 2 else 3;
+
+            self.CFGR.SW = .PLL;
+            while (self.CFGR.SWS != .PLL) asm volatile ("");
 
             self.CR.HSEON = .HSE_OFF;
         }
