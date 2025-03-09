@@ -1599,16 +1599,16 @@ const ResetAndClockControl = packed struct {
     /// OBS: This simply enables the peripherals, but each one of them still needs to be configured through their own registers to work properly.
     pub fn enable_peripherals(self: *volatile ResetAndClockControl, comptime peripherals: []const Peripheral) void {
         inline for (peripherals) |peripheral| {
-            const register_prefix, const bit_prefix = peripheral_register_and_bit_prefixes(peripheral);
-            @field(@field(self, std.fmt.comptimePrint("{s}ENR", register_prefix)), std.fmt.comptimePrint("{s}EN", bit_prefix)) = .CLOCK_ENABLED;
+            const register_prefix, const bit_prefix = comptime peripheral_register_and_bit_prefixes(peripheral);
+            @field(@field(self, std.fmt.comptimePrint("{s}ENR", .{register_prefix})), std.fmt.comptimePrint("{s}EN", .{bit_prefix})) = .CLOCK_ENABLED;
         }
     }
 
     /// Disable one or more peripherals.
     pub fn disable_peripherals(self: *volatile ResetAndClockControl, comptime peripherals: []const Peripheral) void {
         inline for (peripherals) |peripheral| {
-            const register_prefix, const bit_prefix = peripheral_register_and_bit_prefixes(peripheral);
-            @field(@field(self, std.fmt.comptimePrint("{s}ENR", register_prefix)), std.fmt.comptimePrint("{s}EN", bit_prefix)) = .CLOCK_DISABLED;
+            const register_prefix, const bit_prefix = comptime peripheral_register_and_bit_prefixes(peripheral);
+            @field(@field(self, std.fmt.comptimePrint("{s}ENR", .{register_prefix})), std.fmt.comptimePrint("{s}EN", .{bit_prefix})) = .CLOCK_DISABLED;
         }
     }
 
@@ -1617,33 +1617,33 @@ const ResetAndClockControl = packed struct {
     /// OBS: This only enables the peripheral during Low Power mode, to enable during normal mode use the enable_peripherals function.
     pub fn enable_peripherals_in_low_power(self: *volatile ResetAndClockControl, comptime peripherals: []const Peripheral) void {
         inline for (peripherals) |peripheral| {
-            const register_prefix, const bit_prefix = peripheral_register_and_bit_prefixes(peripheral);
-            @field(@field(self, std.fmt.comptimePrint("{s}LPENR", register_prefix)), std.fmt.comptimePrint("{s}LPEN", bit_prefix)) = .CLOCK_ENABLED;
+            const register_prefix, const bit_prefix = comptime peripheral_register_and_bit_prefixes(peripheral);
+            @field(@field(self, std.fmt.comptimePrint("{s}LPENR", .{register_prefix})), std.fmt.comptimePrint("{s}LPEN", .{bit_prefix})) = .CLOCK_ENABLED;
         }
     }
 
     /// Disable one or more peripherals during the Low Power mode
     pub fn disable_peripherals_in_low_power(self: *volatile ResetAndClockControl, comptime peripherals: []const Peripheral) void {
         inline for (peripherals) |peripheral| {
-            const register_prefix, const bit_prefix = peripheral_register_and_bit_prefixes(peripheral);
-            @field(@field(self, std.fmt.comptimePrint("{s}LPENR", register_prefix)), std.fmt.comptimePrint("{s}LPEN", bit_prefix)) = .CLOCK_DISABLED;
+            const register_prefix, const bit_prefix = comptime peripheral_register_and_bit_prefixes(peripheral);
+            @field(@field(self, std.fmt.comptimePrint("{s}LPENR", .{register_prefix})), std.fmt.comptimePrint("{s}LPEN", .{bit_prefix})) = .CLOCK_DISABLED;
         }
     }
 
     /// Reset one or more peripherals
     pub fn reset_peripherals(self: *volatile ResetAndClockControl, comptime peripherals: []const Peripheral) void {
         inline for (peripherals) |peripheral| {
-            const register_prefix, const bit_prefix = peripheral_register_and_bit_prefixes(peripheral);
+            const register_prefix, const bit_prefix = comptime peripheral_register_and_bit_prefixes(peripheral);
 
             // TODO(Lucas): Check if this is the correct way to do this
-            @field(@field(self, std.fmt.comptimePrint("{s}RSTR", register_prefix)), std.fmt.comptimePrint("{s}RST", bit_prefix)) = .RESET;
+            @field(@field(self, std.fmt.comptimePrint("{s}RSTR", .{register_prefix})), std.fmt.comptimePrint("{s}RST", .{bit_prefix})) = .RESET;
             for (0..100_000) |_| asm volatile ("");
-            @field(@field(self, std.fmt.comptimePrint("{s}RSTR", register_prefix)), std.fmt.comptimePrint("{s}RST", bit_prefix)) = .DONT_RESET;
+            @field(@field(self, std.fmt.comptimePrint("{s}RSTR", .{register_prefix})), std.fmt.comptimePrint("{s}RST", .{bit_prefix})) = .DONT_RESET;
         }
     }
 
     /// Auxiliar function used during compile time to aid in determining the register and bit names for each of the peripherals being enabled, disabled or reset.
-    fn peripheral_register_and_bit_prefixes(comptime peripheral: Peripheral) struct { *const u8, *const u8 } {
+    fn peripheral_register_and_bit_prefixes(comptime peripheral: Peripheral) struct { []const u8, []const u8 } {
         return comptime switch (peripheral) {
             .GPIO_A => .{ "AHB1", "GPIOA" },
             .GPIO_B => .{ "AHB1", "GPIOB" },
@@ -1694,12 +1694,12 @@ const ResetAndClockControl = packed struct {
 
     /// Enable one or more of the interrupts from this controller.
     pub fn enable_interrupt(self: *volatile ResetAndClockControl, comptime interrupts: []const InterruptSource) void {
-        inline for (interrupts) |interrupt| @field(self.CIR, std.fmt.comptimePrint("{s}IE", interrupt_bit_prefix(interrupt))) = .INTERRUPT_ENABLED;
+        inline for (interrupts) |interrupt| @field(self.CIR, std.fmt.comptimePrint("{s}IE", .{interrupt_bit_prefix(interrupt)})) = .INTERRUPT_ENABLED;
     }
 
     /// Disable one or more of the interrupts from this controller.
     pub fn disable_interrupt(self: *volatile ResetAndClockControl, comptime interrupts: []const InterruptSource) void {
-        inline for (interrupts) |interrupt| @field(self.CIR, std.fmt.comptimePrint("{s}IE", interrupt_bit_prefix(interrupt))) = .INTERRUPT_DISABLED;
+        inline for (interrupts) |interrupt| @field(self.CIR, std.fmt.comptimePrint("{s}IE", .{interrupt_bit_prefix(interrupt)})) = .INTERRUPT_DISABLED;
     }
 
     /// Determine which of the interrupts sources from this controller generated the last interrupt.
@@ -1707,10 +1707,10 @@ const ResetAndClockControl = packed struct {
     /// OBS: This function also clears the interrupt flag.
     pub fn determine_interrupt_source(self: *volatile ResetAndClockControl) ?InterruptSource {
         inline for (InterruptSource) |interrupt| {
-            const bit_prefix = interrupt_bit_prefix(interrupt);
+            const bit_prefix = comptime interrupt_bit_prefix(interrupt);
 
-            if (@field(self.CIR, std.fmt.comptimePrint("{s}F", bit_prefix)) == .IS_INTERRUPT_SOURCE) {
-                @field(self.CIR, std.fmt.comptimePrint("{s}C", bit_prefix)) = .CLEAR_FLAG;
+            if (@field(self.CIR, std.fmt.comptimePrint("{s}F", .{bit_prefix})) == .IS_INTERRUPT_SOURCE) {
+                @field(self.CIR, std.fmt.comptimePrint("{s}C", .{bit_prefix})) = .CLEAR_FLAG;
                 return interrupt;
             }
         }
@@ -1719,7 +1719,7 @@ const ResetAndClockControl = packed struct {
     }
 
     /// Auxiliar function used during compile time to aid in determining the bit name for each of the peripherals being enabled, disabled or reset.
-    fn interrupt_bit_prefix(comptime interrupt: InterruptSource) *const u8 {
+    fn interrupt_bit_prefix(comptime interrupt: InterruptSource) []const u8 {
         return comptime switch (interrupt) {
             .LSI_READY => "LSIRDY",
             .LSE_READY => "LSERDY",
