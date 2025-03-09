@@ -5,7 +5,7 @@ const rcc = UniMicro.rcc;
 
 pub fn main() !void {
     rcc.set_system_clock(.{ .clock = .{ .MHz = 96 }, .using_usb_or_sdio = true });
-    rcc.AHB1ENR.GPIOCEN = .CLOCK_ENABLED;
+    rcc.enable_peripherals(&.{.GPIO_C});
 
     gpio.portC.configure_pins(&.{
         .{ .number = 13, .mode = .OUTPUT, .output_speed = .FAST },
