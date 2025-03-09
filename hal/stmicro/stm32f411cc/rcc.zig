@@ -1473,8 +1473,6 @@ const ResetAndClockControl = packed struct {
     /// Auxiliar function used inside the set_system_clock function during compile time to determine the PLL coefficients to achieve the desired clock.
     fn calculate_PLL(comptime input_in_khz: u32, comptime output_in_khz: u32, comptime using_usb_or_sdio: bool) CoefficientsPLL {
         comptime {
-            const std = @import("std");
-
             const USB_FREQ_IN_KHZ = 48 * 1000;
             var best_so_far: CoefficientsPLL = .{
                 .m = 2,
