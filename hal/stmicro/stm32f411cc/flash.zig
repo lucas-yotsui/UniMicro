@@ -11,41 +11,31 @@ const Flash = packed struct {
         _reserved1: u4,
         /// Prefetch enable
         PRFTEN: enum(u1) {
-            /// Prefetch is disabled
             PREFETCH_DISABLED = 0,
-            /// Prefetch is enabled
             PREFETCH_ENABLED = 1,
         },
         /// Instruction cache enable
         ICEN: enum(u1) {
-            /// Instruction cache is disabled
             INSTRUCTION_CACHE_DISABLED = 0,
-            /// Instruction cache is enabled
             INSTRUCTION_CACHE_ENABLED = 1,
         },
         /// Data cache enable
         DCEN: enum(u1) {
-            /// Data cache is disabled
             DATA_CACHE_DISABLED = 0,
-            /// Data cache is enabled
             DATA_CACHE_ENABLED = 1,
         },
         /// Instruction cache reset
         ///
         /// This bit can be written only when the I cache is disabled
         ICRST: enum(u1) {
-            /// Instruction cache is not reset
             INSTRUCTION_CACHE_NOT_RESET = 0,
-            /// Instruction cache is reset
             INSTRUCTION_CACHE_RESET = 1,
         },
         /// Data cache reset
         ///
         /// This bit can be written only when the D cache is disabled
         DCRST: enum(u1) {
-            /// Data cache is not reset
             DATA_CACHE_NOT_RESET = 0,
-            /// Data cache is reset
             DATA_CACHE_RESET = 1,
         },
         /// This field is reserved DO NOT ACCESS IT!
@@ -83,24 +73,19 @@ const Flash = packed struct {
         EOP: packed union {
             /// Use this enum to interpret data when reading this bit
             read: enum(u1) {
-                /// Operation has not completed successfully
                 NOT_COMPLETED = 0,
-                /// Operation has completed successfully
                 COMPLETED = 1,
             },
             /// Use this enum when writing to this bit
             write: enum(u1) {
-                /// Clear this bit
                 CLEAR = 1,
             },
         },
         /// Operation error
         ///
-        /// Set by hardware when a flash operation (programming / erase /read) request is detected and can not be run because of parallelism, alignment, or write protection error This bit is set only if error interrupts are enabled
+        /// Set by hardware when a flash operation (programming/erase/read) request is detected and can not be run because of parallelism, alignment, or write protection error This bit is set only if error interrupts are enabled
         OPERR: enum(u1) {
-            /// No error during the operation
             NO_ERROR = 0,
-            /// Parallelism, alignment or write protection error during the operation
             ERROR = 1,
         },
         /// This field is reserved DO NOT ACCESS IT!
@@ -111,14 +96,11 @@ const Flash = packed struct {
         WRPERR: packed union {
             /// Use this enum to interpret data when reading this bit
             read: enum(u1) {
-                /// No error during the operation
                 NO_ERROR = 0,
-                /// Address belongs to a write-protected part of the Flash memory
                 ERROR = 1,
             },
             /// Use this enum when writing to this bit
             write: enum(u1) {
-                /// Clear this bit
                 CLEAR = 1,
             },
         },
@@ -128,14 +110,11 @@ const Flash = packed struct {
         PGAERR: packed union {
             /// Use this enum to interpret data when reading this bit
             read: enum(u1) {
-                /// No error during the operation
                 NO_ERROR = 0,
-                /// Data to program cannot be contained in the same 128-bit Flash memory row
                 ERROR = 1,
             },
             /// Use this enum when writing to this bit
             write: enum(u1) {
-                /// Clear this bit
                 CLEAR = 1,
             },
         },
@@ -145,14 +124,11 @@ const Flash = packed struct {
         PGPERR: packed union {
             /// Use this enum to interpret data when reading this bit
             read: enum(u1) {
-                /// No error during the operation
                 NO_ERROR = 0,
-                /// Size of the access (byte, half-word, word, double word) does not match the parallelism configuration
                 ERROR = 1,
             },
             /// Use this enum when writing to this bit
             write: enum(u1) {
-                /// Clear this bit
                 CLEAR = 1,
             },
         },
@@ -162,14 +138,11 @@ const Flash = packed struct {
         PGSERR: packed union {
             /// Use this enum to interpret data when reading this bit
             read: enum(u1) {
-                /// No error during the operation
                 NO_ERROR = 0,
-                /// Code tried to write to the Flash memory while the control register has not been correctly configured
                 ERROR = 1,
             },
             /// Use this enum when writing to this bit
             write: enum(u1) {
-                /// Clear this bit
                 CLEAR = 1,
             },
         },
@@ -179,14 +152,11 @@ const Flash = packed struct {
         RDERR: packed union {
             /// Use this enum to interpret data when reading this bit
             read: enum(u1) {
-                /// No error during the operation
                 NO_ERROR = 0,
-                /// Address to be read through the Dbus belongs to a read protected part of the Flash memory
                 ERROR = 1,
             },
             /// Use this enum when writing to this bit
             write: enum(u1) {
-                /// Clear this bit
                 CLEAR = 1,
             },
         },
@@ -197,9 +167,7 @@ const Flash = packed struct {
         /// Clear this bit
         /// This bit indicates that a Flash memory operation is in progress. It is set at the beginning of a Flash memory operation and cleared when the operation finishes or an error occurs
         BSY: enum(u1) {
-            /// No Flash memory operation ongoing
             NO_OPERATION_ONGOING = 0,
-            /// Flash memory operation ongoing
             OPERATION_ONGOING = 1,
         },
         /// This field is reserved DO NOT ACCESS IT!
@@ -211,48 +179,32 @@ const Flash = packed struct {
     CR: packed struct(u32) {
         /// Programming
         PG: enum(u1) {
-            /// Flash programming deactivated
             PROGRAMMING_DEACTIVATED = 0,
-            /// Flash programming activated
             PROGRAMMING_ACTIVATED = 1,
         },
         /// Sector Erase
         SER: enum(u1) {
-            /// Sector erase deactivated
             SECTOR_ERASE_DEACTIVATED = 0,
-            /// Sector erase activated
             SECTOR_ERASE_ACTIVATED = 1,
         },
         /// Mass Erase
         MER: enum(u1) {
-            /// Erase for all user sectors deactivated
             MASS_ERASE_DEACTIVATED = 0,
-            /// Erase activated for all user sectors
             MASS_ERASE_ACTIVATED = 1,
         },
         /// Sector number
         ///
         /// These bits select the sector to erase
         SNB: enum(u4) {
-            /// Sector 0
             SECTOR_0 = 0,
-            /// Sector 1
             SECTOR_1 = 1,
-            /// Sector 2
             SECTOR_2 = 2,
-            /// Sector 3
             SECTOR_3 = 3,
-            /// Sector 4
             SECTOR_4 = 4,
-            /// Sector 5
             SECTOR_5 = 5,
-            /// Sector 6
             SECTOR_6 = 6,
-            /// Sector 7
             SECTOR_7 = 7,
-            /// User specific sector
             USER_SPECIFIC_SECTOR = 0b1100,
-            /// User configuration sector
             USER_CONFIGURATION_SECTOR = 0b1101,
         },
         /// This field is reserved DO NOT ACCESS IT!
@@ -276,7 +228,6 @@ const Flash = packed struct {
         ///
         /// This bit triggers an erase operation when set. It is set only by software and cleared when the BSY bit is cleared
         STRT: enum(u1) {
-            /// Trigger an erase operation
             CLEAR = 1,
         },
         /// This field is reserved DO NOT ACCESS IT!
@@ -285,18 +236,14 @@ const Flash = packed struct {
         ///
         /// This bit enables the interrupt generation when the EOP bit in the FLASH_SR register goes to 1
         EOPIE: enum(u1) {
-            /// Error interrupt generation disabled
             END_OF_OPERATION_INTERRUPT_DISABLED = 0,
-            /// Error interrupt generation enabled
             END_OF_OPERATION_INTERRUPT_ENABLED = 1,
         },
         /// Error interrupt enable
         ///
         /// This bit enables the interrupt generation when the OPERR bit in the FLASH_SR register is set to 1
         ERRIE: enum(u1) {
-            /// Error interrupt generation disabled
             ERROR_INTERRUPT_DISABLED = 0,
-            /// Error interrupt generation enabled
             ERROR_INTERRUPT_ENABLED = 1,
         },
         /// This field is reserved DO NOT ACCESS IT!
@@ -309,14 +256,11 @@ const Flash = packed struct {
         LOCK: packed union {
             /// Use this enum to interpret data when reading this bit
             read: enum(u1) {
-                /// CR register is unlocked
                 UNLOCKED = 0,
-                /// CR register is locked
                 LOCKED = 1,
             },
             /// Use this enum when writing to this bit
             write: enum(u1) {
-                /// Lock the CR register
                 LOCK = 1,
             },
         },
@@ -333,14 +277,11 @@ const Flash = packed struct {
         OPTLOCK: packed union {
             /// Use this enum to interpret data when reading this bit
             read: enum(u1) {
-                /// OPTCR register is unlocked
                 UNLOCKED = 0,
-                /// OPTCR register is locked
                 LOCKED = 1,
             },
             /// Use this enum when writing to this bit
             write: enum(u1) {
-                /// Lock the OPTCR register
                 LOCK = 1,
             },
         },
@@ -348,20 +289,15 @@ const Flash = packed struct {
         ///
         /// This bit triggers a user option operation when set. It is set only by software and cleared when the BSY bit is cleared
         OPTSTRT: enum(u1) {
-            /// Trigger a user option operation
             CLEAR = 1,
         },
         /// BOR reset Level
         ///
         /// These bits contain the supply level threshold that activates/releases the reset. They can be written to program a new BOR level. By default, BOR is off. When the supply voltage (VDD) drops below the selected BOR level, a device reset is generated
         BOR_LEV: enum(u2) {
-            /// BOR Level 3 (VBOR3), brownout threshold level 3
             BOR_LEVEL_3 = 0b00,
-            /// BOR Level 2 (VBOR2), brownout threshold level 2
             BOR_LEVEL_2 = 0b01,
-            /// BOR Level 1 (VBOR1), brownout threshold level 1
             BOR_LEVEL_1 = 0b10,
-            /// BOR off, POR/PDR reset threshold level is applied
             BOR_OFF = 0b11,
         },
         /// This field is reserved DO NOT ACCESS IT!
@@ -417,15 +353,14 @@ const Flash = packed struct {
         _reserved2: u7,
         /// Selection of Protection Mode of nWPRi bits
         SPRMOD: enum(u1) {
-            /// PCROP disabled, nWPRi bits used for Write Protection on sector i
             PCROP_DISABLED = 0,
-            /// PCROP enabled, nWPRi bits used for PCROP Protection on sector i
             PCROP_ENABLED = 1,
         },
     },
+
+    // TODO(Lucas): Implement the HAL functions
 };
 
-/// Embedded Flash memory
 pub const flash: *volatile Flash = @ptrFromInt(0x40023C00);
 
 test "field_offsets" {

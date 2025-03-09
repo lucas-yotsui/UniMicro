@@ -7,9 +7,7 @@ const ResetAndClockControl = packed struct {
         ///
         /// Set by hardware to force the HSI oscillator ON when leaving the Stop or Standby mode or in case of a failure of the HSE oscillator used directly or indirectly as the system clock. This bit cannot be cleared if the HSI is used directly or indirectly as the system clock.
         HSION: enum(u1) {
-            /// HSI oscillator OFF
             HSI_OFF = 0,
-            /// HSI oscillator ON
             HSI_ON = 1,
         },
         /// Internal high-speed clock ready flag
@@ -18,9 +16,7 @@ const ResetAndClockControl = packed struct {
         ///
         /// After the HSION bit is cleared, HSIRDY goes low after 6 HSI clock cycles.
         HSIRDY: enum(u1) {
-            /// HSI oscillator not ready
             HSI_NOT_READY = 0,
-            /// HSI oscillator ready
             HSI_READY = 1,
         },
         /// This field is reserved. DO NOT ACCESS IT!
@@ -39,9 +35,7 @@ const ResetAndClockControl = packed struct {
         ///
         /// Cleared by hardware to stop the HSE oscillator when entering Stop or Standby mode. This bit cannot be reset if the HSE oscillator is used directly or indirectly as the system clock.
         HSEON: enum(u1) {
-            /// HSE oscillator not ready
             HSE_OFF = 0,
-            /// HSE oscillator ready
             HSE_ON = 1,
         },
         /// HSE clock ready flag
@@ -59,9 +53,7 @@ const ResetAndClockControl = packed struct {
         ///
         /// The external clock must be enabled with the HSEON bit, to be used by the device. The HSEBYP bit can be written only if the HSE oscillator is disabled.
         HSEBYP: enum(u1) {
-            /// HSE oscillator not bypassed
             HSE_NOT_BYPASSED = 0,
-            /// HSE oscillator bypassed with an external clock
             HSE_BYPASSED_WITH_EXTERNAL_CLOCK = 1,
         },
         /// Clock security system enable
@@ -70,9 +62,7 @@ const ResetAndClockControl = packed struct {
         ///
         /// When CSSON is set, the clock detector is enabled by hardware when the HSE oscillator is ready, and disabled by hardware if an oscillator failure is detected.
         CSSON: enum(u1) {
-            /// Clock security system OFF (Clock detector OFF)
             CLOCK_SECURITY_OFF = 0,
-            /// Clock security system ON (Clock detector ON if HSE oscillator is stable, OFF if not)
             CLOCK_SECURITY_ON = 1,
         },
         /// This field is reserved. DO NOT ACCESS IT!
@@ -85,18 +75,14 @@ const ResetAndClockControl = packed struct {
         ///
         /// This bit cannot be reset if PLL clock is used as the system clock.
         PLLON: enum(u1) {
-            /// PLL OFF
             PLL_OFF = 0,
-            /// PLL ON
             PLL_ON = 1,
         },
         /// Main PLL (PLL) clock ready flag
         ///
         /// Set by hardware to indicate that PLL is locked.
         PLLRDY: enum(u1) {
-            /// PLL unlocked
             PLL_UNLOCKED = 0,
-            /// PLL locked
             PLL_LOCKED = 1,
         },
         /// PLLI2S enable
@@ -105,18 +91,14 @@ const ResetAndClockControl = packed struct {
         ///
         /// Cleared by hardware when entering Stop or Standby mode.
         PLLI2SON: enum(u1) {
-            /// PLLI2S OFF
             PLLI2S_OFF = 0,
-            /// PLLI2S ON
             PLLI2S_ON = 1,
         },
         /// PLLI2S clock ready flag
         ///
         /// Set by hardware to indicate that the PLLI2S is locked.
         PLLI2SRDY: enum(u1) {
-            /// PLLI2S unlocked
             PLLI2S_UNLOCKED = 0,
-            /// PLLI2S locked
             PLLI2S_LOCKED = 1,
         },
         /// This field is reserved. DO NOT ACCESS IT!
@@ -172,9 +154,7 @@ const ResetAndClockControl = packed struct {
         ///
         /// This bit can be written only when PLL and PLLI2S are disabled.
         PLLSRC: enum(u1) {
-            /// HSI clock selected as PLL and PLLI2S clock entry
             HSI = 0,
-            /// HSE oscillator clock selected as PLL and PLLI2S clock entry
             HSE = 1,
         },
         /// This field is reserved. DO NOT ACCESS IT!
@@ -200,22 +180,16 @@ const ResetAndClockControl = packed struct {
         ///
         /// Set by hardware to force the HSI selection when leaving the Stop or Standby mode or in case of failure of the HSE oscillator used directly or indirectly as the system clock.
         SW: enum(u2) {
-            /// HSI oscillator selected as system clock
             HSI = 0b00,
-            /// HSE oscillator selected as system clock
             HSE = 0b01,
-            /// PLL selected as system clock
             PLL = 0b10,
         },
         /// System clock switch status
         ///
         /// Set and cleared by hardware to indicate which clock source is used as the system clock.
         SWS: enum(u2) {
-            /// HSI oscillator used as the system clock
             HSI = 0b00,
-            /// HSE oscillator used as the system clock
             HSE = 0b01,
-            /// PLL used as the system clock
             PLL = 0b10,
         },
         /// AHB prescaler
@@ -224,23 +198,14 @@ const ResetAndClockControl = packed struct {
         ///
         /// Caution: The clocks are divided with the new prescaler factor from 1 to 16 AHB cycles after HPRE write.
         HPRE: enum(u4) {
-            /// system clock not divided
             NO_DIVISOR = 0b0000,
-            /// system clock divided by 2
             DIV_BY_2 = 0b1000,
-            /// system clock divided by 4
             DIV_BY_4 = 0b1001,
-            /// system clock divided by 8
             DIV_BY_8 = 0b1010,
-            /// system clock divided by 16
             DIV_BY_16 = 0b1011,
-            /// system clock divided by 64
             DIV_BY_64 = 0b1100,
-            /// system clock divided by 128
             DIV_BY_128 = 0b1101,
-            /// system clock divided by 256
             DIV_BY_256 = 0b1110,
-            /// system clock divided by 512
             DIV_BY_512 = 0b1111,
         },
         /// This field is reserved. DO NOT ACCESS IT!
@@ -251,15 +216,10 @@ const ResetAndClockControl = packed struct {
         ///
         /// Caution: The software has to set these bits correctly not to exceed 50 MHz on this domain. The clocks are divided with the new prescaler factor from 1 to 16 AHB cycles after PPRE1 write.
         PPRE1: enum(u3) {
-            /// AHB clock not divided
             NO_DIVISOR = 0b000,
-            /// AHB clock divided by 2
             DIV_BY_2 = 0b100,
-            /// AHB clock divided by 4
             DIV_BY_4 = 0b101,
-            /// AHB clock divided by 8
             DIV_BY_8 = 0b110,
-            /// AHB clock divided by 16
             DIV_BY_16 = 0b111,
         },
         /// APB high-speed prescaler (APB2)
@@ -268,15 +228,10 @@ const ResetAndClockControl = packed struct {
         ///
         /// Caution: The software has to set these bits correctly not to exceed 100 MHz on this domain. The clocks are divided with the new prescaler factor from 1 to 16 AHB cycles after PPRE2 write.
         PPRE2: enum(u3) {
-            /// AHB clock not divided
             NO_DIVISOR = 0b000,
-            /// AHB clock divided by 2
             DIV_BY_2 = 0b100,
-            /// AHB clock divided by 4
             DIV_BY_4 = 0b101,
-            /// AHB clock divided by 8
             DIV_BY_8 = 0b110,
-            /// AHB clock divided by 16
             DIV_BY_16 = 0b111,
         },
         /// HSE division factor for RTC clock
@@ -285,132 +240,81 @@ const ResetAndClockControl = packed struct {
         ///
         /// Caution: The software has to set these bits correctly to ensure that the clock supplied to the RTC is 1 MHz. These bits must be configured if needed before selecting the RTC clock source.
         RTCPRE: enum(u5) {
-            /// no clock
             NO_CLOCK = 0b00000,
-            /// HSE / 2
             DIV_BY_2 = 0b00010,
-            /// HSE / 3
             DIV_BY_3 = 0b00011,
-            /// HSE / 4
             DIV_BY_4 = 0b00100,
-            /// HSE / 5
             DIV_BY_5 = 0b00101,
-            /// HSE / 6
             DIV_BY_6 = 0b00110,
-            /// HSE / 7
             DIV_BY_7 = 0b00111,
-            /// HSE / 8
             DIV_BY_8 = 0b01000,
-            /// HSE / 9
             DIV_BY_9 = 0b01001,
-            /// HSE / 10
             DIV_BY_10 = 0b01010,
-            /// HSE / 11
             DIV_BY_11 = 0b01011,
-            /// HSE / 12
             DIV_BY_12 = 0b01100,
-            /// HSE / 13
             DIV_BY_13 = 0b01101,
-            /// HSE / 14
             DIV_BY_14 = 0b01110,
-            /// HSE / 15
             DIV_BY_15 = 0b01111,
-            /// HSE / 16
             DIV_BY_16 = 0b10000,
-            /// HSE / 17
             DIV_BY_17 = 0b10001,
-            /// HSE / 18
             DIV_BY_18 = 0b10010,
-            /// HSE / 19
             DIV_BY_19 = 0b10011,
-            /// HSE / 20
             DIV_BY_20 = 0b10100,
-            /// HSE / 21
             DIV_BY_21 = 0b10101,
-            /// HSE / 22
             DIV_BY_22 = 0b10110,
-            /// HSE / 23
             DIV_BY_23 = 0b10111,
-            /// HSE / 24
             DIV_BY_24 = 0b11000,
-            /// HSE / 25
             DIV_BY_25 = 0b11001,
-            /// HSE / 26
             DIV_BY_26 = 0b11010,
-            /// HSE / 27
             DIV_BY_27 = 0b11011,
-            /// HSE / 28
             DIV_BY_28 = 0b11100,
-            /// HSE / 29
             DIV_BY_29 = 0b11101,
-            /// HSE / 30
             DIV_BY_30 = 0b11110,
-            /// HSE / 31
             DIV_BY_31 = 0b11111,
         },
         /// Microcontroller clock output 1
         ///
         /// Set and cleared by software. Clock source selection may generate glitches on MCO1. It is highly recommended to configure these bits only after reset before enabling the external oscillators and PLL.
         MCO1: enum(u2) {
-            /// HSI clock selected
             HSI = 0b00,
-            /// LSE oscillator selected
             LSE = 0b01,
-            /// HSE oscillator clock selected
             HSE = 0b10,
-            /// PLL clock selected
             PLL = 0b11,
         },
         /// I2S clock selection
         ///
         /// Set and cleared by software. This bit allows to select the I2S clock source between the PLLI2S clock and the external clock. It is highly recommended to change this bit only after reset and before enabling the I2S module.
         I2SSRC: enum(u1) {
-            /// PLLI2S clock used as I2S clock source
             PLLI2S = 0,
-            /// External clock mapped on the I2S_CKIN pin used as I2S clock source
             I2S_CKIN = 1,
         },
         /// MCO1 prescaler
         ///
         /// Set and cleared by software to configure the prescaler of the MCO1. Modification of this prescaler may generate glitches on MCO1. It is highly recommended to change this prescaler only after reset before enabling the external oscillators and the PLL.
         MCO1PRE: enum(u3) {
-            /// no division
             NO_DIVISION = 0b000,
-            /// division by 2
             DIV_BY_2 = 0b100,
-            /// division by 3
             DIV_BY_3 = 0b101,
-            /// division by 4
             DIV_BY_4 = 0b110,
-            /// division by 5
             DIV_BY_5 = 0b111,
         },
         /// MCO2 prescaler
         ///
         /// Set and cleared by software to configure the prescaler of the MCO2. Modification of this prescaler may generate glitches on MCO2. It is highly recommended to change this prescaler only after reset before enabling the external oscillators and the PLLs.
         MCO2PRE: enum(u3) {
-            /// no division
             NO_DIVISION = 0b000,
-            /// division by 2
             DIV_BY_2 = 0b100,
-            /// division by 3
             DIV_BY_3 = 0b101,
-            /// division by 4
             DIV_BY_4 = 0b110,
-            /// division by 5
             DIV_BY_5 = 0b111,
         },
         /// Microcontroller clock output 2
         ///
         /// Set and cleared by software. Clock source selection may generate glitches on MCO2. It is highly recommended to configure these bits only after reset before enabling the external oscillators and the PLLs.
         MCO2: enum(u2) {
-            /// System clock (SYSCLK) selected
             SYSCLK = 0b00,
-            /// PLLI2S clock selected
             PLLI2S = 0b01,
-            /// HSE oscillator clock selected
             HSE = 0b10,
-            /// PLL clock selected
             PLL = 0b11,
         },
     },
@@ -421,67 +325,37 @@ const ResetAndClockControl = packed struct {
         /// Set by hardware when the internal low speed clock becomes stable and LSIRDYDIE is set.
         ///
         /// Cleared by software setting the LSIRDYC bit.
-        LSIRDYF: enum(u1) {
-            /// No clock ready interrupt caused by the LSI oscillator
-            NO_CLOCK_READY_INTERRUPT = 0,
-            /// Clock ready interrupt caused by the LSI oscillator
-            CLOCK_READY_INTERRUPT = 1,
-        },
+        LSIRDYF: InterruptFlag,
         /// LSE ready interrupt flag
         ///
         /// Set by hardware when the External Low Speed clock becomes stable and LSERDYDIE is set.
         ///
         /// Cleared by software setting the LSERDYC bit.
-        LSERDYF: enum(u1) {
-            /// No clock ready interrupt caused by the LSE oscillator
-            NO_CLOCK_READY_INTERRUPT = 0,
-            /// Clock ready interrupt caused by the LSE oscillator
-            CLOCK_READY_INTERRUPT = 1,
-        },
+        LSERDYF: InterruptFlag,
         /// HSI ready interrupt flag
         ///
         /// Set by hardware when the Internal High Speed clock becomes stable and HSIRDYDIE is set.
         ///
         /// Cleared by software setting the HSIRDYC bit.
-        HSIRDYF: enum(u1) {
-            /// No clock ready interrupt caused by the HSI oscillator
-            NO_CLOCK_READY_INTERRUPT = 0,
-            /// Clock ready interrupt caused by the HSI oscillator
-            CLOCK_READY_INTERRUPT = 1,
-        },
+        HSIRDYF: InterruptFlag,
         /// HSE ready interrupt flag
         ///
         /// Set by hardware when External High Speed clock becomes stable and HSERDYDIE is set.
         ///
         /// Cleared by software setting the HSERDYC bit.
-        HSERDYF: enum(u1) {
-            /// No clock ready interrupt caused by the HSE oscillator
-            NO_CLOCK_READY_INTERRUPT = 0,
-            /// Clock ready interrupt caused by the HSE oscillator
-            CLOCK_READY_INTERRUPT = 1,
-        },
+        HSERDYF: InterruptFlag,
         /// Main PLL (PLL) ready interrupt flag
         ///
         /// Set by hardware when PLL locks and PLLRDYDIE is set.
         ///
         /// Cleared by software setting the PLLRDYC bit.
-        PLLRDYF: enum(u1) {
-            /// No clock ready interrupt caused by PLL lock
-            NO_CLOCK_READY_INTERRUPT = 0,
-            /// Clock ready interrupt caused by PLL lock
-            CLOCK_READY_INTERRUPT = 1,
-        },
+        PLLRDYF: InterruptFlag,
         /// PLLI2S ready interrupt flag
         ///
         /// Set by hardware when the PLLI2S locks and PLLI2SRDYDIE is set.
         ///
         /// Cleared by software setting the PLLRI2SDYC bit.
-        PLLI2SRDYF: enum(u1) {
-            /// No clock ready interrupt caused by PLLI2S lock
-            NO_CLOCK_READY_INTERRUPT = 0,
-            /// Clock ready interrupt caused by PLLI2S lock
-            CLOCK_READY_INTERRUPT = 1,
-        },
+        PLLI2SRDYF: InterruptFlag,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved1: u1,
         /// Clock security system interrupt flag
@@ -489,133 +363,63 @@ const ResetAndClockControl = packed struct {
         /// Set by hardware when a failure is detected in the HSE oscillator.
         ///
         /// Cleared by software setting the CSSC bit.
-        CSSF: enum(u1) {
-            /// No clock security interrupt caused by HSE clock failure
-            NO_CLOCK_SECURITY_INTERRUPT = 0,
-            /// Clock security interrupt caused by HSE clock failure
-            CLOCK_SECURITY_INTERRUPT = 1,
-        },
+        CSSF: InterruptFlag,
         /// LSI ready interrupt enable
         ///
         ///Set and cleared by software to enable/disable interrupt caused by LSI oscillator stabilization.
-        LSIRDYIE: enum(u1) {
-            /// LSI ready interrupt disabled
-            INTERRUPT_DISABLED = 0,
-            /// LSI ready interrupt enabled
-            INTERRUPT_ENABLED = 1,
-        },
+        LSIRDYIE: InterruptEnable,
         /// LSE ready interrupt enable
         ///
         /// Set and cleared by software to enable/disable interrupt caused by the LSE oscillator stabilization.
-        LSERDYIE: enum(u1) {
-            /// LSE ready interrupt disabled
-            INTERRUPT_DISABLED = 0,
-            /// LSE ready interrupt enabled
-            INTERRUPT_ENABLED = 1,
-        },
+        LSERDYIE: InterruptEnable,
         /// HSI ready interrupt enable
         ///
         /// Set and cleared by software to enable/disable interrupt caused by the HSI oscillator stabilization.
-        HSIRDYIE: enum(u1) {
-            /// HSI ready interrupt disabled
-            INTERRUPT_DISABLED = 0,
-            /// HSI ready interrupt enabled
-            INTERRUPT_ENABLED = 1,
-        },
+        HSIRDYIE: InterruptEnable,
         /// HSE ready interrupt enable
         ///
         /// Set and cleared by software to enable/disable interrupt caused by the HSE oscillator stabilization.
-        HSERDYIE: enum(u1) {
-            /// HSE ready interrupt disabled
-            INTERRUPT_DISABLED = 0,
-            /// HSE ready interrupt enabled
-            INTERRUPT_ENABLED = 1,
-        },
+        HSERDYIE: InterruptEnable,
         /// Main PLL (PLL) ready interrupt enable
         ///
         /// Set and cleared by software to enable/disable interrupt caused by PLL lock.
-        PLLRDYIE: enum(u1) {
-            /// PLL lock interrupt disabled
-            INTERRUPT_DISABLED = 0,
-            /// PLL lock interrupt enabled
-            INTERRUPT_ENABLED = 1,
-        },
+        PLLRDYIE: InterruptEnable,
         /// PLLI2S ready interrupt enable
         ///
         /// Set and cleared by software to enable/disable interrupt caused by PLLI2S lock.
-        PLLI2SRDYIE: enum(u1) {
-            /// PLLI2S lock interrupt disabled
-            INTERRUPT_DISABLED = 0,
-            /// PLLI2S lock interrupt enabled
-            INTERRUPT_ENABLED = 1,
-        },
+        PLLI2SRDYIE: InterruptEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u2,
         /// LSI ready interrupt clear
         ///
         /// This bit is set by software to clear the LSIRDYF flag.
-        LSIRDYC: enum(u1) {
-            /// No effect
-            NO_EFFECT = 0,
-            /// LSIRDYF cleared
-            CLEAR_FLAG = 1,
-        },
+        LSIRDYC: ClearFlag,
         /// LSE ready interrupt clear
         ///
         /// This bit is set by software to clear the LSERDYF flag.
-        LSERDYC: enum(u1) {
-            /// No effect
-            NO_EFFECT = 0,
-            /// LSIRDYF cleared
-            CLEAR_FLAG = 1,
-        },
+        LSERDYC: ClearFlag,
         /// HSI ready interrupt clear
         ///
         /// This bit is set software to clear the HSIRDYF flag.
-        HSIRDYC: enum(u1) {
-            /// No effect
-            NO_EFFECT = 0,
-            /// HSIRDYF cleared
-            CLEAR_FLAG = 1,
-        },
+        HSIRDYC: ClearFlag,
         /// HSE ready interrupt clear
         ///
         /// This bit is set by software to clear the HSERDYF flag.
-        HSERDYC: enum(u1) {
-            /// No effect
-            NO_EFFECT = 0,
-            /// HSERDYF cleared
-            CLEAR_FLAG = 1,
-        },
+        HSERDYC: ClearFlag,
         /// Main PLL(PLL) ready interrupt clear
         ///
         /// This bit is set by software to clear the PLLRDYF flag.
-        PLLRDYC: enum(u1) {
-            /// No effect
-            NO_EFFECT = 0,
-            /// PLLRDYF cleared
-            CLEAR_FLAG = 1,
-        },
+        PLLRDYC: ClearFlag,
         /// PLLI2S ready interrupt clear
         ///
         /// This bit is set by software to clear the PLLI2SRDYF flag.
-        PLLI2SRDYC: enum(u1) {
-            /// No effect
-            NO_EFFECT = 0,
-            /// PLLI2SRDYF cleared
-            CLEAR_FLAG = 1,
-        },
+        PLLI2SRDYC: ClearFlag,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved3: u1,
         /// Clock security system interrupt clear
         ///
         /// This bit is set by software to clear the CSSF flag.
-        CSSC: enum(u1) {
-            /// No effect
-            NO_EFFECT = 0,
-            /// CSSF cleared
-            CLEAR_FLAG = 1,
-        },
+        CSSC: ClearFlag,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved4: u8,
     },
@@ -624,90 +428,45 @@ const ResetAndClockControl = packed struct {
         /// IO port A reset
         ///
         /// Set and cleared by software.
-        GPIOARST: enum(u1) {
-            /// does not reset IO port A
-            DONT_RESET = 0,
-            /// resets IO port A
-            RESET = 1,
-        },
+        GPIOARST: ResetPeripheral,
         /// IO port B reset
         ///
         /// Set and cleared by software.
-        GPIOBRST: enum(u1) {
-            /// does not reset IO port B
-            DONT_RESET = 0,
-            /// resets IO port B
-            RESET = 1,
-        },
+        GPIOBRST: ResetPeripheral,
         /// IO port C reset
         ///
         /// Set and cleared by software.
-        GPIOCRST: enum(u1) {
-            /// does not reset IO port C
-            DONT_RESET = 0,
-            /// resets IO port C
-            RESET = 1,
-        },
+        GPIOCRST: ResetPeripheral,
         /// IO port D reset
         ///
         /// Set and cleared by software.
-        GPIODRST: enum(u1) {
-            /// does not reset IO port D
-            DONT_RESET = 0,
-            /// resets IO port D
-            RESET = 1,
-        },
+        GPIODRST: ResetPeripheral,
         /// IO port E reset
         ///
         /// Set and cleared by software.
-        GPIOERST: enum(u1) {
-            /// does not reset IO port E
-            DONT_RESET = 0,
-            /// resets IO port E
-            RESET = 1,
-        },
+        GPIOERST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved1: u2,
         /// IO port H reset
         ///
         /// Set and cleared by software.
-        GPIOHRST: enum(u1) {
-            /// does not reset IO port H
-            DONT_RESET = 0,
-            /// resets IO port H
-            RESET = 1,
-        },
+        GPIOHRST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u4,
         /// CRC reset
         ///
         /// Set and cleared by software.
-        CRCRST: enum(u1) {
-            /// does not reset CRC
-            DONT_RESET = 0,
-            /// resets CRC
-            RESET = 1,
-        },
+        CRCRST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved3: u8,
         /// DMA1 reset
         ///
         /// Set and cleared by software.
-        DMA1RST: enum(u1) {
-            /// does not reset DMA1
-            DONT_RESET = 0,
-            /// resets DMA1
-            RESET = 1,
-        },
+        DMA1RST: ResetPeripheral,
         /// DMA2 reset
         ///
         /// Set and cleared by software.
-        DMA2RST: enum(u1) {
-            /// does not reset DMA2
-            DONT_RESET = 0,
-            /// resets DMA2
-            RESET = 1,
-        },
+        DMA2RST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved4: u9,
     },
@@ -718,137 +477,72 @@ const ResetAndClockControl = packed struct {
         /// USB OTG FS reset
         ///
         /// Set and cleared by software.
-        OTGFSRST: enum(u1) {
-            /// does not reset USB OTG FS
-            DONT_RESET = 0,
-            /// resets USB OTG FS
-            RESET = 1,
-        },
+        OTGFSRST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u24,
     },
     /// This field is reserved. DO NOT ACCESS IT!
     _reserved1: u64,
-    /// RCC APB1 peripheral reset registe
+    /// RCC APB1 peripheral reset register
     APB1RSTR: packed struct(u32) {
         /// TIM2 reset
         ///
         /// Set and cleared by software.
-        TIM2: enum(u1) {
-            /// does not reset TIM2
-            DONT_RESET = 0,
-            /// resets TIM2
-            RESET = 1,
-        },
+        TIM2: ResetPeripheral,
         /// TIM3 reset
         ///
         /// Set and cleared by software.
-        TIM3: enum(u1) {
-            /// does not reset TIM3
-            DONT_RESET = 0,
-            /// resets TIM3
-            RESET = 1,
-        },
+        TIM3: ResetPeripheral,
         /// TIM4 reset
         ///
         /// Set and cleared by software.
-        TIM4: enum(u1) {
-            /// does not reset TIM4
-            DONT_RESET = 0,
-            /// resets TIM4
-            RESET = 1,
-        },
+        TIM4: ResetPeripheral,
         /// TIM5 reset
         ///
         /// Set and cleared by software.
-        TIM5: enum(u1) {
-            /// does not reset TIM5
-            DONT_RESET = 0,
-            /// resets TIM5
-            RESET = 1,
-        },
+        TIM5: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved1: u7,
         /// Window Watchdog reset
         ///
         /// Set and cleared by software.
-        WWDGRST: enum(u1) {
-            /// does not reset the window watchdog
-            DONT_RESET = 0,
-            /// resets the window watchdog
-            RESET = 1,
-        },
+        WWDGRST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u2,
         /// SPI2 reset
         ///
         /// Set and cleared by software.
-        SPI2RST: enum(u1) {
-            /// does not reset SPI2
-            DONT_RESET = 0,
-            /// resets SPI2
-            RESET = 1,
-        },
+        SPI2RST: ResetPeripheral,
         /// SPI3 reset
         ///
         /// Set and cleared by software.
-        SPI3RST: enum(u1) {
-            /// does not reset SPI3
-            DONT_RESET = 0,
-            /// resets SPI3
-            RESET = 1,
-        },
+        SPI3RST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved3: u1,
         /// USART2 reset
         ///
         /// Set and cleared by software.
-        USART2RST: enum(u1) {
-            /// does not reset USART2
-            DONT_RESET = 0,
-            /// resets USART2
-            RESET = 1,
-        },
+        USART2RST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved4: u3,
         /// I2C1 reset
         ///
         /// Set and cleared by software.
-        I2C1RST: enum(u1) {
-            /// does not reset I2C1
-            DONT_RESET = 0,
-            /// resets I2C1
-            RESET = 1,
-        },
+        I2C1RST: ResetPeripheral,
         /// I2C2 reset
         ///
         /// Set and cleared by software.
-        I2C2RST: enum(u1) {
-            /// does not reset I2C2
-            DONT_RESET = 0,
-            /// resets I2C2
-            RESET = 1,
-        },
+        I2C2RST: ResetPeripheral,
         /// I2C3 reset
         ///
         /// Set and cleared by software.
-        I2C3RST: enum(u1) {
-            /// does not reset I2C3
-            DONT_RESET = 0,
-            /// resets I2C3
-            RESET = 1,
-        },
+        I2C3RST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved5: u4,
         /// Power Interface reset
         ///
         /// Set and cleared by software.
-        PWRRST: enum(u1) {
-            /// does not reset the power interface
-            DONT_RESET = 0,
-            /// resets the power interface
-            RESET = 1,
-        },
+        PWRRST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved: u3,
     },
@@ -857,121 +551,61 @@ const ResetAndClockControl = packed struct {
         /// TIM1 reset
         ///
         /// Set and cleared by software.
-        TIM1RST: enum(u1) {
-            /// does not reset TIM1
-            DONT_RESET = 0,
-            /// resets TIM1
-            RESET = 1,
-        },
+        TIM1RST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved1: u3,
         /// USART1 reset
         ///
         /// Set and cleared by software.
-        USART1RST: enum(u1) {
-            /// does not reset USART1
-            DONT_RESET = 0,
-            /// resets USART1
-            RESET = 1,
-        },
+        USART1RST: ResetPeripheral,
         /// USART6 reset
         ///
         /// Set and cleared by software.
-        USART6RST: enum(u1) {
-            /// does not reset USART6
-            DONT_RESET = 0,
-            /// resets USART6
-            RESET = 1,
-        },
+        USART6RST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u2,
         /// ADC interface reset
         ///
         /// Set and cleared by software.
-        ADC1RST: enum(u1) {
-            /// does not reset the ADC interface
-            DONT_RESET = 0,
-            /// resets the ADC interface
-            RESET = 1,
-        },
+        ADC1RST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved3: u2,
         /// SDIO reset
         ///
         /// Set and cleared by software.
-        SDIORST: enum(u1) {
-            /// does not reset the SDIO module
-            DONT_RESET = 0,
-            /// resets the SDIO module
-            RESET = 1,
-        },
+        SDIORST: ResetPeripheral,
         /// SPI1 reset
         ///
         /// Set and cleared by software.
-        SPI1RST: enum(u1) {
-            /// does not reset SPI1
-            DONT_RESET = 0,
-            /// resets SPI1
-            RESET = 1,
-        },
+        SPI1RST: ResetPeripheral,
         /// SPI4 reset
         ///
         /// Set and cleared by software.
-        SPI4RST: enum(u1) {
-            /// does not reset SPI4
-            DONT_RESET = 0,
-            /// resets SPI4
-            RESET = 1,
-        },
+        SPI4RST: ResetPeripheral,
         /// System Configuration Controller reset
         ///
         /// Set and cleared by software.
-        SYSCFGRST: enum(u1) {
-            /// does not reset the System configuration controller
-            DONT_RESET = 0,
-            /// resets the System configuration controller
-            RESET = 1,
-        },
+        SYSCFGRST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved4: u1,
         /// TIM9 reset
         ///
         /// Set and cleared by software.
-        TIM9RST: enum(u1) {
-            /// does not reset TIM9
-            DONT_RESET = 0,
-            /// resets TIM9
-            RESET = 1,
-        },
+        TIM9RST: ResetPeripheral,
         /// TIM10 reset
         ///
         /// Set and cleared by software.
-        TIM10RST: enum(u1) {
-            /// does not reset TIM10
-            DONT_RESET = 0,
-            /// resets TIM10
-            RESET = 1,
-        },
+        TIM10RST: ResetPeripheral,
         /// TIM11 reset
         ///
         /// Set and cleared by software.
-        TIM11RST: enum(u1) {
-            /// does not reset TIM11
-            DONT_RESET = 0,
-            /// resets TIM11
-            RESET = 1,
-        },
+        TIM11RST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved5: u1,
         /// SPI5 reset
         ///
         /// Set and cleared by software.
-        SPI5RST: enum(u1) {
-            /// does not reset SPI5
-            DONT_RESET = 0,
-            /// resets SPI5
-            RESET = 1,
-        },
+        SPI5RST: ResetPeripheral,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved6: u11,
     },
@@ -982,90 +616,45 @@ const ResetAndClockControl = packed struct {
         /// IO port A clock enable
         ///
         /// Set and cleared by software.
-        GPIOAEN: enum(u1) {
-            //IO port A clock disabled
-            CLOCK_DISABLED = 0,
-            // IO port A clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        GPIOAEN: ClockEnable,
         /// IO port B clock enable
         ///
         /// Set and cleared by software.
-        GPIOBEN: enum(u1) {
-            //IO port B clock disabled
-            CLOCK_DISABLED = 0,
-            // IO port B clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        GPIOBEN: ClockEnable,
         /// IO port C clock enable
         ///
         /// Set and cleared by software.
-        GPIOCEN: enum(u1) {
-            //IO port C clock disabled
-            CLOCK_DISABLED = 0,
-            // IO port C clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        GPIOCEN: ClockEnable,
         /// IO port D clock enable
         ///
         /// Set and cleared by software.
-        GPIODEN: enum(u1) {
-            //IO port D clock disabled
-            CLOCK_DISABLED = 0,
-            // IO port D clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        GPIODEN: ClockEnable,
         /// IO port E clock enable
         ///
         /// Set and cleared by software.
-        GPIOEEN: enum(u1) {
-            //IO port E clock disabled
-            CLOCK_DISABLED = 0,
-            // IO port E clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        GPIOEEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved1: u2,
         /// IO port H clock enable
         ///
         /// Set and cleared by software.
-        GPIOHEN: enum(u1) {
-            //IO port H clock disabled
-            CLOCK_DISABLED = 0,
-            // IO port H clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        GPIOHEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u4,
         /// CRC clock enable
         ///
         /// Set and cleared by software.
-        CRCEN: enum(u1) {
-            /// CRC clock disabled
-            CLOCK_DISABLED = 0,
-            /// CRC clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        CRCEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved3: u8,
         /// DMA1 clock enable
         ///
         /// Set and cleared by software.
-        DMA1EN: enum(u1) {
-            /// DMA1 clock disabled
-            CLOCK_DISABLED = 0,
-            /// DMA1 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        DMA1EN: ClockEnable,
         /// DMA2 clock enable
         ///
         /// Set and cleared by software.
-        DMA2EN: enum(u1) {
-            /// DMA2 clock disabled
-            CLOCK_DISABLED = 0,
-            /// DMA2 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        DMA2EN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved4: u9,
     },
@@ -1076,12 +665,7 @@ const ResetAndClockControl = packed struct {
         /// USB OTG FS clock enable
         ///
         /// Set and cleared by software.
-        OTGFSEN: enum(u1) {
-            /// USB OTG FS clock disabled
-            CLOCK_DISABLED = 0,
-            /// USB OTG FS clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        OTGFSEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u24,
     },
@@ -1092,121 +676,61 @@ const ResetAndClockControl = packed struct {
         /// TIM3 clock enable
         ///
         /// Set and cleared by software.
-        TIM2EN: enum(u1) {
-            /// TIM2 clock disabled
-            CLOCK_DISABLED = 0,
-            /// TIM2 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        TIM2EN: ClockEnable,
         /// TIM3 clock enable
         ///
         /// Set and cleared by software.
-        TIM3EN: enum(u1) {
-            /// TIM3 clock disabled
-            CLOCK_DISABLED = 0,
-            /// TIM3 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        TIM3EN: ClockEnable,
         /// TIM4 clock enable
         ///
         /// Set and cleared by software.
-        TIM4EN: enum(u1) {
-            /// TIM4 clock disabled
-            CLOCK_DISABLED = 0,
-            /// TIM4 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        TIM4EN: ClockEnable,
         /// TIM5 clock enable
         ///
         /// Set and cleared by software.
-        TIM5EN: enum(u1) {
-            /// TIM5 clock disabled
-            CLOCK_DISABLED = 0,
-            /// TIM5 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        TIM5EN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved1: u7,
         /// Window Watchdog clock enable
         ///
         /// Set and cleared by software.
-        WWDGEN: enum(u1) {
-            /// Window watchdog clock disabled
-            CLOCK_DISABLED = 0,
-            /// Window watchdog clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        WWDGEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u2,
         /// SPI2 clock enable
         ///
         /// Set and cleared by software.
-        SPI2EN: enum(u1) {
-            /// SPI2 clock disabled
-            CLOCK_DISABLED = 0,
-            /// SPI2 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        SPI2EN: ClockEnable,
         /// SPI3 clock enable
         ///
         /// Set and cleared by software.
-        SPI3EN: enum(u1) {
-            /// SPI3 clock disabled
-            CLOCK_DISABLED = 0,
-            /// SPI3 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        SPI3EN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved3: u1,
         /// USART2 clock enable
         ///
         /// Set and cleared by software.
-        USART2EN: enum(u1) {
-            /// USART2 clock disabled
-            CLOCK_DISABLED = 0,
-            /// USART2 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        USART2EN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved4: u3,
         /// I2C1 clock enable
         ///
         /// Set and cleared by software.
-        I2C1EN: enum(u1) {
-            /// I2C1 clock disabled
-            CLOCK_DISABLED = 0,
-            /// I2C1 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        I2C1EN: ClockEnable,
         /// I2C2 clock enable
         ///
         /// Set and cleared by software.
-        I2C2EN: enum(u1) {
-            /// I2C2 clock disabled
-            CLOCK_DISABLED = 0,
-            /// I2C2 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        I2C2EN: ClockEnable,
         /// I2C3 clock enable
         ///
         /// Set and cleared by software.
-        I2C3EN: enum(u1) {
-            /// I2C3 clock disabled
-            CLOCK_DISABLED = 0,
-            /// I2C3 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        I2C3EN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved5: u4,
         /// Power Interface clock enable
         ///
         /// Set and cleared by software.
-        PWREN: enum(u1) {
-            /// Power interface clock disabled
-            CLOCK_DISABLED = 0,
-            /// Power interface clock enable
-            CLOCK_ENABLED = 1,
-        },
+        PWREN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved6: u3,
     },
@@ -1215,121 +739,61 @@ const ResetAndClockControl = packed struct {
         /// TIM1 clock enable
         ///
         /// Set and cleared by software.
-        TIM1EN: enum(u1) {
-            /// TIM1 clock disabled
-            CLOCK_DISABLED = 0,
-            /// TIM1 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        TIM1EN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved1: u3,
         /// USART1 clock enable
         ///
         /// Set and cleared by software.
-        USART1EN: enum(u1) {
-            /// USART1 clock disabled
-            CLOCK_DISABLED = 0,
-            /// USART1 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        USART1EN: ClockEnable,
         /// USART6 clock enable
         ///
         /// Set and cleared by software.
-        USART6EN: enum(u1) {
-            /// USART6 clock disabled
-            CLOCK_DISABLED = 0,
-            /// USART6 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        USART6EN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u2,
         /// ADC interface clock enable
         ///
         /// Set and cleared by software.
-        ADC1EN: enum(u1) {
-            /// ADC1 clock disabled
-            CLOCK_DISABLED = 0,
-            /// ADC1 clock disabled
-            CLOCK_ENABLED = 1,
-        },
+        ADC1EN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved3: u2,
         /// SDIO clock enable
         ///
         /// Set and cleared by software.
-        SDIOEN: enum(u1) {
-            /// SDIO module clock disabled
-            CLOCK_DISABLED = 0,
-            /// SDIO module clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        SDIOEN: ClockEnable,
         /// SPI1 clock enable
         ///
         /// Set and cleared by software.
-        SPI1EN: enum(u1) {
-            /// SPI1 clock disabled
-            CLOCK_DISABLED = 0,
-            /// SPI1 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        SPI1EN: ClockEnable,
         /// SPI4 clock enable
         ///
         /// Set and cleared by software.
-        SPI4EN: enum(u1) {
-            /// SPI4 clock disabled
-            CLOCK_DISABLED = 0,
-            /// SPI4 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        SPI4EN: ClockEnable,
         /// System Configuration Controller clock enable
         ///
         /// Set and cleared by software.
-        SYSCFGEN: enum(u1) {
-            /// System configuration controller clock disabled
-            CLOCK_DISABLED = 0,
-            /// System configuration controller clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        SYSCFGEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved4: u1,
         /// TIM9 clock enable
         ///
         /// Set and cleared by software.
-        TIM9EN: enum(u1) {
-            /// TIM9 clock disabled
-            CLOCK_DISABLED = 0,
-            /// TIM9 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        TIM9EN: ClockEnable,
         /// TIM10 clock enable
         ///
         /// Set and cleared by software.
-        TIM10EN: enum(u1) {
-            /// TIM10 clock disabled
-            CLOCK_DISABLED = 0,
-            /// TIM10 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        TIM10EN: ClockEnable,
         /// TIM11 clock enable
         ///
         /// Set and cleared by software.
-        TIM11EN: enum(u1) {
-            /// TIM11 clock disabled
-            CLOCK_DISABLED = 0,
-            /// TIM11 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        TIM11EN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved5: u1,
         /// SPI5 clock enable
         ///
         /// Set and cleared by software.
-        SPI5EN: enum(u1) {
-            /// SPI5 clock disabled
-            CLOCK_DISABLED = 0,
-            /// SPI5 clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        SPI5EN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved6: u11,
     },
@@ -1340,110 +804,55 @@ const ResetAndClockControl = packed struct {
         /// IO port A clock enable during sleep mode
         ///
         /// Set and cleared by software.
-        GPIOALPEN: enum(u1) {
-            /// IO port A clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// IO port A clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        GPIOALPEN: ClockEnable,
         /// IO port B clock enable during sleep mode
         ///
         /// Set and cleared by software.
-        GPIOBLPEN: enum(u1) {
-            /// IO port B clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// IO port B clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        GPIOBLPEN: ClockEnable,
         /// IO port C clock enable during sleep mode
         ///
         /// Set and cleared by software.
-        GPIOCLPEN: enum(u1) {
-            /// IO port C clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// IO port C clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        GPIOCLPEN: ClockEnable,
         /// IO port D clock enable during sleep mode
         ///
         /// Set and cleared by software.
-        GPIODLPEN: enum(u1) {
-            /// IO port D clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// IO port D clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        GPIODLPEN: ClockEnable,
         /// IO port E clock enable during sleep mode
         ///
         /// Set and cleared by software.
-        GPIOELPEN: enum(u1) {
-            /// IO port E clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// IO port E clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        GPIOELPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved1: u2,
         /// IO port H clock enable during sleep mode
         ///
         /// Set and cleared by software.
-        GPIOHLPEN: enum(u1) {
-            /// IO port H clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// IO port H clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        GPIOHLPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved3: u4,
         /// CRC clock enable during sleep mode
         ///
         /// Set and cleared by software.
-        CRCLPEN: enum(u1) {
-            /// CRC clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// CRC clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        CRCLPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved4: u2,
         /// Flash Interface clock enable during sleep mode
         ///
         /// Set and cleared by software.
-        FLITLPEN: enum(u1) {
-            /// Flash interface clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// Flash interface clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        FLITLPEN: ClockEnable,
         /// SRAM1 Interface clock enable during sleep mode
         ///
         /// Set and cleared by software.
-        SRAM1LPEN: enum(u1) {
-            /// SRAM1 interface clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// SRAM1 interface clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        SRAM1LPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved5: u4,
         /// DMA1 clock enable during sleep mode
         ///
         /// Set and cleared by software.
-        DMA1LPEN: enum(u1) {
-            /// DMA1 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// DMA1 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        DMA1LPEN: ClockEnable,
         /// DMA2 clock enable during sleep mode
         ///
         /// Set and cleared by software.
-        DMA2LPEN: enum(u1) {
-            /// DMA2 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// DMA2 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        DMA2LPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved6: u9,
     },
@@ -1454,12 +863,7 @@ const ResetAndClockControl = packed struct {
         /// USB OTG FS clock enable during sleep mode
         ///
         /// Set and cleared by software.
-        OTGFSLPEN: enum(u1) {
-            /// USB OTG FS clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// USB OTG FS clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        OTGFSLPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u24,
     },
@@ -1470,121 +874,61 @@ const ResetAndClockControl = packed struct {
         /// TIM2 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        TIM2LPEN: enum(u1) {
-            /// TIM2 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// TIM2 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        TIM2LPEN: ClockEnable,
         /// TIM3 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        TIM3LPEN: enum(u1) {
-            /// TIM3 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// TIM3 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        TIM3LPEN: ClockEnable,
         /// TIM4 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        TIM4LPEN: enum(u1) {
-            /// TIM4 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// TIM4 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        TIM4LPEN: ClockEnable,
         /// TIM5 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        TIM5LPEN: enum(u1) {
-            /// TIM5 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// TIM5 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        TIM5LPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved1: u7,
         /// Window Watchdog clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        WWDGLPEN: enum(u1) {
-            /// Window watchdog clock disabled during sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// Window watchdog clock enabled during sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        WWDGLPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u2,
         /// SPI2 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        SPI2LPEN: enum(u1) {
-            /// SPI2 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// SPI2 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        SPI2LPEN: ClockEnable,
         /// SPI3 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        SPI3LPEN: enum(u1) {
-            /// SPI3 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// SPI3 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        SPI3LPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved3: u1,
         /// USART2 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        USART2LPEN: enum(u1) {
-            /// USART2 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// USART2 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        USART2LPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved4: u3,
         /// I2C1 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        I2C1LPEN: enum(u1) {
-            /// I2C1 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// I2C1 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        I2C1LPEN: ClockEnable,
         /// I2C2 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        I2C2LPEN: enum(u1) {
-            /// I2C2 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// I2C2 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        I2C2LPEN: ClockEnable,
         /// I2C3 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        I2C3LPEN: enum(u1) {
-            /// I2C3 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// I2C3 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        I2C3LPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved5: u4,
         /// Power Interface clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        PWRLPEN: enum(u1) {
-            /// Power interface clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// Power interface clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        PWRLPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved6: u3,
     },
@@ -1593,121 +937,61 @@ const ResetAndClockControl = packed struct {
         /// TIM1 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        TIM1LPEN: enum(u1) {
-            /// TIM1 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// TIM1 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        TIM1LPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved1: u3,
         /// USART1 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        USART1LPEN: enum(u1) {
-            /// USART1 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// USART1 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        USART1LPEN: ClockEnable,
         /// USART6 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        USART6LPEN: enum(u1) {
-            /// USART6 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// USART6 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        USART6LPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u2,
         /// ADC1 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        ADC1LPEN: enum(u1) {
-            /// ADC1 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// ADC1 clock disabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        ADC1LPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved3: u2,
         /// SDIO clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        SDIOLPEN: enum(u1) {
-            /// SDIO module clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// SDIO module clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        SDIOLPEN: ClockEnable,
         /// SPI1 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        SPI1LPEN: enum(u1) {
-            /// SPI1 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// SPI1 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        SPI1LPEN: ClockEnable,
         /// SPI4 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        SPI4LPEN: enum(u1) {
-            /// SPI4 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// SPI4 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        SPI4LPEN: ClockEnable,
         /// System Configuration Controller clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        SYSCFGLPEN: enum(u1) {
-            /// System configuration controller clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// System configuration controller clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        SYSCFGLPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved4: u1,
         /// TIM9 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        TIM9LPEN: enum(u1) {
-            /// TIM9 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// TIM9 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        TIM9LPEN: ClockEnable,
         /// TIM10 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        TIM10LPEN: enum(u1) {
-            /// TIM10 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// TIM10 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        TIM10LPEN: ClockEnable,
         /// TIM11 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        TIM11LPEN: enum(u1) {
-            /// TIM11 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// TIM11 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        TIM11LPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved5: u1,
         /// SPI5 clock enable during Sleep mode
         ///
         /// Set and cleared by software.
-        SPI5LPEN: enum(u1) {
-            /// SPI5 clock disabled during Sleep mode
-            CLOCK_DISABLED_IN_SLEEP = 0,
-            /// SPI5 clock enabled during Sleep mode
-            CLOCK_ENABLED_IN_SLEEP = 1,
-        },
+        SPI5LPEN: ClockEnable,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved6: u11,
     },
@@ -1719,36 +1003,28 @@ const ResetAndClockControl = packed struct {
         ///
         /// Set and cleared by software.
         LSEON: enum(u1) {
-            /// LSE clock OFF
             LSE_OFF = 0,
-            /// LSE clock ON
             LSE_ON = 1,
         },
         /// External low-speed oscillator ready
         ///
         /// Set and cleared by hardware to indicate when the external 32 kHz oscillator is stable. After the LSEON bit is cleared, LSERDY goes low after 6 external low-speed oscillator clock cycles.
         LSERDY: enum(u1) {
-            /// LSE clock not ready
             LSE_NOT_READY = 0,
-            /// LSE clock ready
             LSE_READY = 1,
         },
         /// External low-speed oscillator bypass
         ///
         /// Set and cleared by software to bypass oscillator in debug mode. This bit can be written only when the LSE clock is disabled.
         LSEBYP: enum(u1) {
-            /// LSE oscillator not bypassed
             LSE_NOT_BYPASSED = 0,
-            /// LSE oscillator bypassed
             LSE_BYPASSED = 1,
         },
         /// External low-speed oscillator bypass
         ///
         /// Set and reset by software to select crystal mode for low speed oscillator. Two power modes are available.
         LSEMOD: enum(u1) {
-            /// LSE oscillator “low power” mode selection
             LOW_POWER = 0,
-            /// LSE oscillator “high drive” mode selection
             HIGH_DRIVE = 1,
         },
         /// This field is reserved. DO NOT ACCESS IT!
@@ -1757,13 +1033,9 @@ const ResetAndClockControl = packed struct {
         ///
         /// Set by software to select the clock source for the RTC. Once the RTC clock source has been selected, it cannot be changed anymore unless the Backup domain is reset. The BDRST bit can be used to reset them.
         RTCSEL: enum(u2) {
-            /// No clock
             NO_CLOCK = 0b00,
-            /// LSE oscillator clock used as the RTC clock
             LSE = 0b01,
-            /// LSI oscillator clock used as the RTC clock
             LSI = 0b10,
-            /// HSE oscillator clock divided by a programmable prescaler (selection through the RTCPRE[4:0] bits in the RCC clock configuration register (RCC_CFGR)) used as the RTC clock
             HSE = 0b11,
         },
         /// This field is reserved. DO NOT ACCESS IT!
@@ -1771,19 +1043,12 @@ const ResetAndClockControl = packed struct {
         /// RTC clock enable
         ///
         /// Set and cleared by software.
-        RTCEN: enum(u1) {
-            /// RTC clock disabled
-            CLOCK_DISABLED = 0,
-            /// RTC clock enabled
-            CLOCK_ENABLED = 1,
-        },
+        RTCEN: ClockEnable,
         /// Backup domain software reset
         ///
         /// Set and cleared by software.
         BDRST: enum(u1) {
-            /// Reset not activated
             DONT_RESET = 0,
-            /// Resets the entire Backup domain
             RESET = 1,
         },
         /// This field is reserved. DO NOT ACCESS IT!
@@ -1795,18 +1060,14 @@ const ResetAndClockControl = packed struct {
         ///
         /// Set and cleared by software.
         LSION: enum(u1) {
-            /// LSI RC oscillator OFF
             LSI_OFF = 0,
-            /// LSI RC oscillator ON
             LSI_ON = 1,
         },
         /// Internal low-speed oscillator ready
         ///
         /// Set and cleared by hardware to indicate when the internal RC 40 kHz oscillator is stable. After the LSION bit is cleared, LSIRDY goes low after 3 LSI clock cycles.
         LSIRDY: enum(u1) {
-            /// LSI RC oscillator not ready
             LSI_NOT_READY = 0,
-            /// LSI RC oscillator ready
             LSI_READY = 1,
         },
         /// This field is reserved. DO NOT ACCESS IT!
@@ -1814,89 +1075,49 @@ const ResetAndClockControl = packed struct {
         /// Remove reset flag
         ///
         /// Set by software to clear the reset flags.
-        RMVF: enum(u1) {
-            /// No effect
-            NO_EFFECT = 0,
-            /// Clear the reset flags
-            CLEAR_RESET_FLAGS = 1,
-        },
+        RMVF: ClearFlag,
         /// BOR (brownout) reset flag
         ///
         /// Cleared by software by writing the RMVF bit.
         ///
         /// Set by hardware when a POR/PDR (Power-on/power-down) or BOR (brownout) reset occurs.
-        BORRSTF: enum(u1) {
-            /// No POR/PDR (Power-on/power-down) or BOR (brownout) reset occurred
-            NO_POR_PDR_or_BOR_RESET = 0,
-            /// POR/PDR (Power-on/power-down) or BOR (brownout) reset occurred
-            POR_PDR_or_BOR_RESET = 1,
-        },
+        BORRSTF: ResetFlag,
         /// PIN reset flag
         ///
         /// Set by hardware when a reset from the NRST pin occurs.
         ///
         /// Cleared by writing to the RMVF bit.
-        PINRSTF: enum(u1) {
-            /// No reset from NRST pin occurred
-            NO_NRST_RESET = 0,
-            /// Reset from NRST pin occurred
-            NRST_RESET = 1,
-        },
+        PINRSTF: ResetFlag,
         /// POR/PDR (Power-on/power-down) reset flag
         ///
         /// Set by hardware when a POR/PDR (Power-on/power-down) reset occurs.
         ///
         /// Cleared by writing to the RMVF bit.
-        PORRSTF: enum(u1) {
-            /// No POR/PDR (Power-on/power-down) reset occurred
-            NO_POR_PDR_RESET = 0,
-            /// POR/PDR (Power-on/power-down) reset occurred
-            POR_PDR_RESET = 1,
-        },
+        PORRSTF: ResetFlag,
         /// Software reset flag
         ///
         /// Set by hardware when a software reset occurs.
         ///
         /// Cleared by writing to the RMVF bit.
-        SFTRSTF: enum(u1) {
-            /// No software reset occurred
-            NO_SOFTWARE_RESET = 0,
-            /// Software reset occurred
-            SOFTWARE_RESET = 1,
-        },
+        SFTRSTF: ResetFlag,
         /// Independent watchdog reset flag
         ///
         /// Set by hardware when an independent watchdog reset from V DD domain occurs.
         ///
         /// Cleared by writing to the RMVF bit.
-        IWDGRSTF: enum(u1) {
-            /// No watchdog reset occurred
-            NO_WATCHDOG_RESET = 0,
-            /// Watchdog reset occurred
-            WATCHDOG_RESET = 1,
-        },
+        IWDGRSTF: ResetFlag,
         /// Window watchdog reset flag
         ///
         /// Set by hardware when a window watchdog reset occurs.
         ///
         /// Cleared by writing to the RMVF bit.
-        WWDGRSTF: enum(u1) {
-            /// No window watchdog reset occurred
-            NO_WINDOW_WATCHDOG_RESET = 0,
-            /// Window watchdog reset occurred
-            WINDOW_WATCHDOG_RESET = 1,
-        },
+        WWDGRSTF: ResetFlag,
         ///  Low-power reset flag
         ///
         /// Set by hardware when a Low-power management reset occurs.
         ///
         /// Cleared by writing to the RMVF bit.
-        LPWRRSTF: enum(u1) {
-            /// No Low-power management reset occurred
-            NO_LOW_POWER_MANAGEMENT_RESET = 0,
-            /// Low-power management reset occurred
-            LOW_POWER_MANAGEMENT_RESET = 1,
-        },
+        LPWRRSTF: ResetFlag,
     },
     /// This field is reserved. DO NOT ACCESS IT!
     _reserved7: u64,
@@ -1913,6 +1134,7 @@ const ResetAndClockControl = packed struct {
         /// Configuration input for modulation profile period.
         MODPER: u13,
         /// Incrementation step
+        /// /// Disable one or more peripherals during the Low Power mode
         ///
         /// Set and cleared by software. To write before setting CR[24]=PLLON bit.
         ///
@@ -1920,22 +1142,19 @@ const ResetAndClockControl = packed struct {
         INCSTEP: u15,
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved1: u2,
+        /// Reset one or more peripherals
         /// Spread Select
         ///
         /// Set and cleared by software. To write before to set CR[24]=PLLON bit.
         SPREADSEL: enum(u1) {
-            /// Center spread
             CENTER = 0,
-            /// Down spread
             DOWN = 1,
         },
         /// Spread spectrum modulation enable
         ///
         /// Set and cleared by software. To write after clearing CR[24]=PLLON bit
         SSCGEN: enum(u1) {
-            ///  Spread spectrum modulation DISABLE
             DISABLE = 0,
-            ///  Spread spectrum modulation ENABLE
             ENABLE = 1,
         },
     },
@@ -1996,6 +1215,42 @@ const ResetAndClockControl = packed struct {
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved2: u7,
     },
+
+    /// Possible values for the interrupt flag registers
+    const InterruptFlag = enum(u1) {
+        NOT_THE_INTERRUPT_SOURCE = 0,
+        IS_INTERRUPT_SOURCE = 1,
+    };
+
+    /// Possible values for the interrupt enable registers
+    const InterruptEnable = enum(u1) {
+        INTERRUPT_DISABLED = 0,
+        INTERRUPT_ENABLED = 1,
+    };
+
+    /// Possible values for the interrupt flag registers
+    const ResetFlag = enum(u1) {
+        NOT_THE_RESET_SOURCE = 0,
+        IS_RESET_SOURCE = 1,
+    };
+
+    /// Possible values for the flag clear registers
+    const ClearFlag = enum(u1) {
+        NO_EFFECT = 0,
+        CLEAR_FLAG = 1,
+    };
+
+    /// Possible values for the bits in the xENR and xLPENR registers
+    const ClockEnable = enum(u1) {
+        CLOCK_DISABLED = 0,
+        CLOCK_ENABLED = 1,
+    };
+
+    /// Possible values for the bits in the xRSTR registers
+    const ResetPeripheral = enum(u1) {
+        DONT_RESET = 0,
+        RESET = 1,
+    };
 
     /// Parameters taken by the set_system_clock function.
     const SystemClockConfig = struct {
@@ -2205,12 +1460,15 @@ const ResetAndClockControl = packed struct {
         }
     }
 
+    /// The coefficients used to calibrate the PLL's frequency
     const CoefficientsPLL = struct {
         m: u6,
         n: u9,
         p: u4,
         q: u4,
     };
+
+    /// Auxiliar function used inside the set_system_clock function during compile time to determine the PLL coefficients to achieve the desired clock.
     fn calculate_PLL(comptime input_in_khz: u32, comptime output_in_khz: u32, comptime using_usb_or_sdio: bool) CoefficientsPLL {
         comptime {
             const std = @import("std");
@@ -2267,7 +1525,6 @@ const ResetAndClockControl = packed struct {
     }
 };
 
-/// Reset and clock control
 pub const rcc: *volatile ResetAndClockControl = @ptrFromInt(0x40023800);
 
 test "field_offsets" {

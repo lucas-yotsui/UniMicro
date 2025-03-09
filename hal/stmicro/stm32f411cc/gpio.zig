@@ -340,97 +340,97 @@ const Gpio = packed struct {
     },
     /// GPIO port output data register
     ODR: packed struct(u32) {
-        /// Pin 0 input data
+        /// Pin 0 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR0: bool,
-        /// Pin 1 input data
+        /// Pin 1 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR1: bool,
-        /// Pin 2 input data
+        /// Pin 2 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR2: bool,
-        /// Pin 3 input data
+        /// Pin 3 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR3: bool,
-        /// Pin 4 input data
+        /// Pin 4 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR4: bool,
-        /// Pin 5 input data
+        /// Pin 5 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR5: bool,
-        /// Pin 6 input data
+        /// Pin 6 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR6: bool,
-        /// Pin 7 input data
+        /// Pin 7 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR7: bool,
-        /// Pin 8 input data
+        /// Pin 8 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR8: bool,
-        /// Pin 9 input data
+        /// Pin 9 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR9: bool,
-        /// Pin 10 input data
+        /// Pin 10 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR10: bool,
-        /// Pin 11 input data
+        /// Pin 11 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR11: bool,
-        /// Pin 12 input data
+        /// Pin 12 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR12: bool,
-        /// Pin 13 input data
+        /// Pin 13 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR13: bool,
-        /// Pin 14 input data
+        /// Pin 14 output data
         ///
         /// This bit can be read and written by software.
         ///
         /// Note: For atomic bit set/reset, the ODR bits can be individually set and reset by writing to the BSRR register
         ODR14: bool,
-        /// Pin 15 input data
+        /// Pin 15 output data
         ///
         /// This bit can be read and written by software.
         ///
@@ -441,301 +441,149 @@ const Gpio = packed struct {
     },
     /// GPIO port bit set/reset register
     BSRR: packed struct(u32) {
+        const SetODR = enum(u1) {
+            NO_ACTION = 0,
+            SET_ODR = 1,
+        };
+
+        const ResetODR = enum(u1) {
+            NO_ACTION = 0,
+            RESET_ODR = 1,
+        };
+
         /// Set bit ODR0
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS0: enum(u1) {
-            /// No action on the ODR0 bit
-            NO_ACTION = 0,
-            /// Sets the ODR0 bit
-            SET_ODR0 = 1,
-        },
+        BS0: SetODR,
         /// Set bit ODR1
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS1: enum(u1) {
-            /// No action on the ODR1 bit
-            NO_ACTION = 0,
-            /// Sets the ODR1 bit
-            SET_ODR1 = 1,
-        },
+        BS1: SetODR,
         /// Set bit ODR2
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS2: enum(u1) {
-            /// No action on the ODR2 bit
-            NO_ACTION = 0,
-            /// Sets the ODR2 bit
-            SET_ODR2 = 1,
-        },
+        BS2: SetODR,
         /// Set bit ODR3
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS3: enum(u1) {
-            /// No action on the ODR3 bit
-            NO_ACTION = 0,
-            /// Sets the ODR3 bit
-            SET_ODR3 = 1,
-        },
+        BS3: SetODR,
         /// Set bit ODR4
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS4: enum(u1) {
-            /// No action on the ODR4 bit
-            NO_ACTION = 0,
-            /// Sets the ODR4 bit
-            SET_ODR4 = 1,
-        },
+        BS4: SetODR,
         /// Set bit ODR5
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS5: enum(u1) {
-            /// No action on the ODR5 bit
-            NO_ACTION = 0,
-            /// Sets the ODR5 bit
-            SET_ODR5 = 1,
-        },
+        BS5: SetODR,
         /// Set bit ODR6
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS6: enum(u1) {
-            /// No action on the ODR6 bit
-            NO_ACTION = 0,
-            /// Sets the ODR6 bit
-            SET_ODR6 = 1,
-        },
+        BS6: SetODR,
         /// Set bit ODR7
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS7: enum(u1) {
-            /// No action on the ODR7 bit
-            NO_ACTION = 0,
-            /// Sets the ODR7 bit
-            SET_ODR7 = 1,
-        },
+        BS7: SetODR,
         /// Set bit ODR8
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS8: enum(u1) {
-            /// No action on the ODR8 bit
-            NO_ACTION = 0,
-            /// Sets the ODR8 bit
-            SET_ODR8 = 1,
-        },
+        BS8: SetODR,
         /// Set bit ODR9
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS9: enum(u1) {
-            /// No action on the ODR9 bit
-            NO_ACTION = 0,
-            /// Sets the ODR9 bit
-            SET_ODR9 = 1,
-        },
+        BS9: SetODR,
         /// Set bit ODR10
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS10: enum(u1) {
-            /// No action on the ODR10 bit
-            NO_ACTION = 0,
-            /// Sets the ODR10 bit
-            SET_ODR10 = 1,
-        },
+        BS10: SetODR,
         /// Set bit ODR11
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS11: enum(u1) {
-            /// No action on the ODR11 bit
-            NO_ACTION = 0,
-            /// Sets the ODR11 bit
-            SET_ODR11 = 1,
-        },
+        BS11: SetODR,
         /// Set bit ODR12
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS12: enum(u1) {
-            /// No action on the ODR12 bit
-            NO_ACTION = 0,
-            /// Sets the ODR12 bit
-            SET_ODR12 = 1,
-        },
+        BS12: SetODR,
         /// Set bit ODR13
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS13: enum(u1) {
-            /// No action on the ODR13 bit
-            NO_ACTION = 0,
-            /// Sets the ODR13 bit
-            SET_ODR13 = 1,
-        },
+        BS13: SetODR,
         /// Set bit ODR14
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS14: enum(u1) {
-            /// No action on the ODR14 bit
-            NO_ACTION = 0,
-            /// Sets the ODR14 bit
-            SET_ODR14 = 1,
-        },
+        BS14: SetODR,
         /// Set bit ODR15
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BS15: enum(u1) {
-            /// No action on the ODR15 bit
-            NO_ACTION = 0,
-            /// Sets the ODR15 bit
-            SET_ODR15 = 1,
-        },
+        BS15: SetODR,
         /// Reset bit ODR0
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR0: enum(u1) {
-            /// No action on the ODR0 bit
-            NO_ACTION = 0,
-            /// Sets the ODR0 bit
-            RESET_ODR0 = 1,
-        },
+        BR0: ResetODR,
         /// Reset bit ODR1
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR1: enum(u1) {
-            /// No action on the ODR1 bit
-            NO_ACTION = 0,
-            /// Sets the ODR1 bit
-            RESET_ODR1 = 1,
-        },
+        BR1: ResetODR,
         /// Reset bit ODR2
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR2: enum(u1) {
-            /// No action on the ODR2 bit
-            NO_ACTION = 0,
-            /// Sets the ODR2 bit
-            RESET_ODR2 = 1,
-        },
+        BR2: ResetODR,
         /// Reset bit ODR3
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR3: enum(u1) {
-            /// No action on the ODR3 bit
-            NO_ACTION = 0,
-            /// Sets the ODR3 bit
-            RESET_ODR3 = 1,
-        },
+        BR3: ResetODR,
         /// Reset bit ODR4
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR4: enum(u1) {
-            /// No action on the ODR4 bit
-            NO_ACTION = 0,
-            /// Sets the ODR4 bit
-            RESET_ODR4 = 1,
-        },
+        BR4: ResetODR,
         /// Reset bit ODR5
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR5: enum(u1) {
-            /// No action on the ODR5 bit
-            NO_ACTION = 0,
-            /// Sets the ODR5 bit
-            RESET_ODR5 = 1,
-        },
+        BR5: ResetODR,
         /// Reset bit ODR6
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR6: enum(u1) {
-            /// No action on the ODR6 bit
-            NO_ACTION = 0,
-            /// Sets the ODR6 bit
-            RESET_ODR6 = 1,
-        },
+        BR6: ResetODR,
         /// Reset bit ODR7
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR7: enum(u1) {
-            /// No action on the ODR7 bit
-            NO_ACTION = 0,
-            /// Sets the ODR7 bit
-            RESET_ODR7 = 1,
-        },
+        BR7: ResetODR,
         /// Reset bit ODR8
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR8: enum(u1) {
-            /// No action on the ODR8 bit
-            NO_ACTION = 0,
-            /// Sets the ODR8 bit
-            RESET_ODR8 = 1,
-        },
+        BR8: ResetODR,
         /// Reset bit ODR9
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR9: enum(u1) {
-            /// No action on the ODR9 bit
-            NO_ACTION = 0,
-            /// Sets the ODR9 bit
-            RESET_ODR9 = 1,
-        },
+        BR9: ResetODR,
         /// Reset bit ODR10
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR10: enum(u1) {
-            /// No action on the ODR10 bit
-            NO_ACTION = 0,
-            /// Sets the ODR10 bit
-            RESET_ODR10 = 1,
-        },
+        BR10: ResetODR,
         /// Reset bit ODR11
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR11: enum(u1) {
-            /// No action on the ODR11 bit
-            NO_ACTION = 0,
-            /// Sets the ODR11 bit
-            RESET_ODR11 = 1,
-        },
+        BR11: ResetODR,
         /// Reset bit ODR12
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR12: enum(u1) {
-            /// No action on the ODR12 bit
-            NO_ACTION = 0,
-            /// Sets the ODR12 bit
-            RESET_ODR12 = 1,
-        },
+        BR12: ResetODR,
         /// Reset bit ODR13
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR13: enum(u1) {
-            /// No action on the ODR13 bit
-            NO_ACTION = 0,
-            /// Sets the ODR13 bit
-            RESET_ODR13 = 1,
-        },
+        BR13: ResetODR,
         /// Reset bit ODR14
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR14: enum(u1) {
-            /// No action on the ODR14 bit
-            NO_ACTION = 0,
-            /// Sets the ODR14 bit
-            RESET_ODR14 = 1,
-        },
+        BR14: ResetODR,
         /// Reset bit ODR15
         ///
         /// This bit is write-only and can be accessed in word, half-word or byte mode. A read to this bit returns the value 0
-        BR15: enum(u1) {
-            /// No action on the ODR15 bit
-            NO_ACTION = 0,
-            /// Sets the ODR15 bit
-            RESET_ODR15 = 1,
-        },
+        BR15: ResetODR,
     },
     /// GPIO port configuration lock register
     LCKR: packed struct(u32) {
         const Lock = enum(u1) {
-            /// Pin 0 configuration not locked
             DONT_LOCK = 0,
-            /// Pin 0 configuration locked
             LOCK = 1,
         };
 
@@ -816,16 +664,9 @@ const Gpio = packed struct {
         /// • Write LCKK = ‘1’ + LCKR[15:0]
         ///
         /// • Read LCKR
-        LCKK: packed union {
-            /// Use this field when writing to this bit.
-            write: u1,
-            /// Use this enum to interpret data when reading this bit
-            read: enum(u1) {
-                /// Port configuration lock key not active
-                UNLOCKED = 0,
-                /// Port configuration lock key active. The LCKR register is locked until an MCU reset or a peripheral reset occurs.
-                LOCKED = 1,
-            },
+        LCKK: enum(u1) {
+            UNLOCKED = 0,
+            LOCKED = 1,
         },
         /// This field is reserved. DO NOT ACCESS IT!
         _reserved: u15,
@@ -902,40 +743,27 @@ const Gpio = packed struct {
     },
 
     const Mode = enum(u2) {
-        /// General purpose input mode
         INPUT = 0b00,
-        /// General purpose output mode
         OUTPUT = 0b01,
-        /// Alternate function mode
         ALTERNATE_FUNCTION = 0b10,
-        /// Analog mode
         ANALOG = 0b11,
     };
 
     const OutputType = enum(u1) {
-        /// Output push-pull
         PUSH_PULL = 0,
-        /// Output open-drain
         OPEN_DRAIN = 1,
     };
 
     const PullUpOrPullDown = enum(u2) {
-        /// No pull-up, pull-down
         NO_PULL = 0b00,
-        /// Pull-up
         PULL_UP = 0b01,
-        /// Pull-down
         PULL_DOWN = 0b10,
     };
 
     const OutputSpeed = enum(u2) {
-        /// Low speed
         LOW = 0b00,
-        /// Medium speed
         MEDIUM = 0b01,
-        /// Fast speed
         FAST = 0b10,
-        /// High speed
         HIGH = 0b11,
     };
 
@@ -1057,7 +885,7 @@ const Gpio = packed struct {
         // Locking sequence demands a read to the register at the end
         _ = self.LCKR;
 
-        if (self.LCKR.LCKK.read != .LOCKED)
+        if (self.LCKR.LCKK != .LOCKED)
             return error.LockFailed;
     }
 
@@ -1106,17 +934,11 @@ const Gpio = packed struct {
     }
 };
 
-/// GPIO Port A
 pub const portA: *volatile Gpio = @ptrFromInt(0x40020000);
-/// GPIO Port B
 pub const portB: *volatile Gpio = @ptrFromInt(0x40020400);
-/// GPIO Port C
 pub const portC: *volatile Gpio = @ptrFromInt(0x40020800);
-/// GPIO Port D
 pub const portD: *volatile Gpio = @ptrFromInt(0x40020C00);
-/// GPIO Port E
 pub const portE: *volatile Gpio = @ptrFromInt(0x40021000);
-/// GPIO Port H
 pub const portH: *volatile Gpio = @ptrFromInt(0x40021C00);
 
 test "field_offsets" {
