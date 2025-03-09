@@ -22,6 +22,8 @@ pub fn init(b: *std.Build, options: UniMicroOptions) *std.Build.Step.InstallFile
     // and then calls the user's main function.
     elf.entry = .{ .symbol_name = "unimicro_main" };
 
+    // Create the default interrupts vector
+    // This can be overriden by the user, since its linkage is weak
     const default_interrupts_vector = b.addObject(.{
         .name = "default_interrupts_vector",
         .root_source_file = .{
@@ -98,7 +100,14 @@ pub fn init(b: *std.Build, options: UniMicroOptions) *std.Build.Step.InstallFile
     }));
 
     // Stringify the args to be passed to the linker_generator.
-    const args_str = std.json.stringifyAlloc(b.allocator, options.target_platform, .{}) catch @panic("Out of Memory!");
+    const target_arg = if (options.custom_memory_layout) |custom_memory| blk: {
+        var modified_target = options.target_platform;
+        modified_target.memory_sections = custom_memory;
+
+        break :blk modified_target;
+    } else options.target_platform;
+
+    const args_str = std.json.stringifyAlloc(b.allocator, target_arg, .{}) catch @panic("Out of Memory!");
 
     // Run the linker_generator.
     const linker_gen_run = b.addRunArtifact(linker_gen);
@@ -134,6 +143,7 @@ pub const UniMicroOptions = struct {
     main_file: std.Build.LazyPath,
     optimization_level: std.builtin.OptimizeMode,
     target_platform: Chip,
+    custom_memory_layout: ?[]const MemorySection = null,
 };
 
 pub const supported_chips = .{
