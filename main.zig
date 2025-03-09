@@ -2,12 +2,14 @@ const std = @import("std");
 const app = @import("app");
 const cpu = @import("cpu");
 
-// Panic handler for the application, if not defined by user defaults to a simple wrapper to call unimicro.hang().
+// Panic handler for the application, if not defined by user defaults to a simple wrapper to call cpu.hang().
 const panic: fn (msg: []const u8, stack_trace: ?*std.builtin.StackTrace, ret_addr: ?usize) noreturn = if (@hasDecl(app, "panic")) app.panic else struct {
     pub fn panic(msg: []const u8, stack_trace: ?*std.builtin.StackTrace, ret_addr: ?usize) noreturn {
         _ = msg;
         _ = stack_trace;
         _ = ret_addr;
+
+        cpu.hang();
     }
 }.panic;
 
