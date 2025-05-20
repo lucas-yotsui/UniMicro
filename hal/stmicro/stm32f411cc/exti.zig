@@ -271,7 +271,7 @@ const EXTI = packed struct {
     },
     /// Pending interrupt register.
     PR: packed struct(u32) {
-        const PendingBit = union {
+        const PendingBit = packed union {
             read: enum(u1) {
                 NO_TRIGGER = 0,
                 TRIGGER_OCCURED = 1,
