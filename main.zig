@@ -31,7 +31,8 @@ export fn unimicro_main() callconv(.C) noreturn {
         @compileError(std.fmt.comptimePrint("You have declared a 'main' function that takes parameters! It should take none, but takes {s}", .{main_info.Fn.params}));
 
     // If it is async
-    // TODO: Investigate if it's possible to support async...
+    // The main function is your program's entry point, it does not make sense to mark it async!
+    // If I'm wrong, open a discussion in the repo explaining why
     if (main_info.Fn.calling_convention == .Async)
         @compileError("You have declared an async 'main' function! This is not supported! Maybe in the future it might, feel free to open a discussion on the repo!");
 
